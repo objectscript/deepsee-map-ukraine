@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="NPMLBI.TestData">
+<Super>%Persistent</Super>
+<TimeCreated>62995,79927.761304</TimeCreated>
+
+<Property name="UKR">
+<Type>NPMLBI.UkraineMap</Type>
+</Property>
+
+<Property name="Value">
+<Type>%Float</Type>
+</Property>
+
+<Method name="populateTestData">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set sc = ..%DeleteExtent()
+
+	&sql(DECLARE TestCur CURSOR FOR 
+		 SELECT ID
+		 FROM NPMLBI.UkraineMap
+		 WHERE "Level" = 2)	
+		
+	&sql(OPEN TestCur)
+	for  
+	{
+		&sql(FETCH TestCur INTO :id) 
+		quit:(SQLCODE '= 0)
+
+		set test = ..%New()
+		set test.UKR = ##class(NPMLBI.UkraineMap).%OpenId(id)
+		set test.Value = 10 + $RANDOM(500) 
+		do test.%Save() 
+	}
+		
+	&sql(CLOSE TestCur)
+	
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^NPMLBI.TestDataD</DataLocation>
+<DefaultData>TestDataDefaultData</DefaultData>
+<IdLocation>^NPMLBI.TestDataD</IdLocation>
+<IndexLocation>^NPMLBI.TestDataI</IndexLocation>
+<StreamLocation>^NPMLBI.TestDataS</StreamLocation>
+<ExtentSize>100000</ExtentSize>
+<Data name="TestDataDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>StorageGuid</Value>
+</Value>
+<Value name="3">
+<Value>Value</Value>
+</Value>
+<Value name="4">
+<Value>Storage</Value>
+</Value>
+<Value name="5">
+<Value>UKR</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>

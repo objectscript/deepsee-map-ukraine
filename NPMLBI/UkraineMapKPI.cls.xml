@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="NPMLBI.UkraineMapKPI">
+<Description>
+NPMLBI.UkraineMapKPI</Description>
+<Super>%DeepSee.KPI</Super>
+<TimeCreated>62477,79026.960538</TimeCreated>
+
+<XData name="KPI">
+<Description>
+Этот блок XData содержит определение KPI</Description>
+<XMLNamespace>http://www.intersystems.com/deepsee/kpi</XMLNamespace>
+<Data><![CDATA[
+<kpi xmlns="http://www.intersystems.com/deepsee/kpi" name="NPMLBI/UkraineMapKPI" sourceType="sql" caption="">
+ 
+<property name="Name" displayName="Район" columnNo="1"/>
+<property name="Color" displayName="Цвет" columnNo="2"/>
+<property name="Latitude" displayName="Широта" columnNo="3"/>
+<property name="Longitude" displayName="Долгота" columnNo="4"/>
+<property name="ParentName" displayName="Адм.ед. верхнего уровня" columnNo="5"/>
+<property name="DefaultZoom" displayName="Масштаб по умолчанию" columnNo="6"/>
+<property name="CanDrillDown" displayName="Возможность drill down" columnNo="7"/>
+<property name="Address" displayName="Адрес" columnNo="8"/>
+<property name="Level" displayName="Level" columnNo="9"/>
+<property name="TotalValue" displayName="TotalValue" columnNo="10"/>
+<property name="SpecialIcon" displayName="TotalValue" columnNo="11"/>
+
+<filter name="LevelFilter" displayName="Родитель" defaultValue="0;-"/>
+<filter name="LevelStart" displayName="Начальный уровень" displayList="Регионы Украины,Области Украины" valueList="0,1" defaultValue="0"/>
+</kpi>
+]]></Data>
+</XData>
+
+<Method name="%OnGetSQL">
+<FormalSpec><![CDATA[&pSQL:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set levelFilter = $piece(..%filterValues.LevelFilter, ";", 1)
+	set parentNameFilter = $piece(..%filterValues.LevelFilter, ";", 2)
+
+	if (..%filterValues.LevelStart = "0")
+	{
+		// Верхний уровень - Части Украины
+			
+		if (levelFilter = "") || (parentNameFilter = "") || (parentNameFilter = "-")
+		{
+			// Отображение частей Украины
+			set pSQL = ..GetStringFromXData("sqlLevelZero")
+		}	
+		elseif (levelFilter = "0") && (parentNameFilter '= "")
+		{
+			// Углубление в часть Украины, у которой уровень = 0 и имя = parentNameFilter
+			set pSQL = ..GetStringFromXData("sqlLevelOne")
+			set pSQL = $replace(pSQL, ":parentNameCondition", "AND ParentName = '"_parentNameFilter_"'")
+		}
+	}
+	elseif (..%filterValues.LevelStart = "1") && ((levelFilter = "") || (parentNameFilter = "") || (parentNameFilter = "-"))
+	{
+		// Верхний уровень - Области Украины
+		// Отображение всех областей
+		set pSQL = ..GetStringFromXData("sqlLevelOne")
+		set pSQL = $replace(pSQL, ":parentNameCondition", "")
+	}
+	else
+	{
+		// Если в момент углубления в область была произведена смена начального слоя
+		if (levelFilter = "0") && (parentNameFilter '= "")
+		{
+			// Углубление в часть Украины, у которой уровень = 0 и имя = parentNameFilter
+			set pSQL = ..GetStringFromXData("sqlLevelOne")
+			set pSQL = $replace(pSQL, ":parentNameCondition", "AND ParentName = '"_parentNameFilter_"'")
+		}
+		else
+		{
+			set pSQL = "SELECT NULL"
+		}
+	}
+	
+	// Углубление область Украины, у которой уровень = 1 и имя = parentNameFilter
+	if (levelFilter = "1") && (parentNameFilter '= "")
+	{
+		set pSQL = ..GetStringFromXData("sqlLevelTwo")
+		set pSQL = $replace(pSQL, ":parentName", parentNameFilter)
+	}
+
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<XData name="sqlLevelZero">
+<Description>
+Части Украины, полигоны (уровнеь 0)</Description>
+<Data><![CDATA[
+<xml><![CDATA[
+SELECT Name,
+       'rgb(' || Color || ',' || (255 - Color) ||',0)' As Color,
+	   NULL As Latitude,
+	   NULL As Longitude,
+	   ParentName,
+	   DefaultZoom,
+	   CanDrillDown,
+	   NULL As Address,
+	   "Level",
+	   TotalValue,
+	   NULL As SpecialIcon
+FROM
+(
+		SELECT Name,
+			   round((255 * (TotalValue - MIN(TotalValue))) / (MAX(TotalValue) - MIN(TotalValue) + 0.1), 0) As Color,
+			   ParentName,
+			   DefaultZoom,
+			   CanDrillDown,
+			   "Level",
+			   TotalValue
+		FROM
+		(
+			   SELECT Name,
+			   ParentName,
+			   DefaultZoom,
+			   CanDrillDown,
+			   "Level",
+			   ( SELECT SUM(TotalValue) 
+				 FROM
+				 (
+					SELECT (SELECT SUM(td.Value) FROM NPMLBI.TestData As td WHERE td.UKR->ParentName = FirstLevel.Name) As TotalValue
+					FROM NPMLBI.UkraineMap As FirstLevel
+					WHERE "Level" = 1 AND ParentName = ZeroLevel.Name
+				 )
+			   ) As TotalValue
+	   
+		FROM NPMLBI.UkraineMap As ZeroLevel
+		WHERE "Level" = 0
+		)
+)
+]]]]><![CDATA[></xml>
+]]></Data>
+</XData>
+
+<XData name="sqlLevelOne">
+<Description>
+Области в государстве, полигоны. (уровень 1)</Description>
+<Data><![CDATA[
+<xml><![CDATA[
+SELECT Name,
+       'rgb(' || Color || ',' || (255 - Color) ||',0)' As Color,
+	   NULL As Latitude,
+	   NULL As Longitude,
+	   ParentName,
+	   DefaultZoom,
+	   CanDrillDown,
+	   NULL As Address,
+	   "Level",
+	   TotalValue,
+	   NULL As SpecialIcon
+FROM
+(
+	SELECT Name,
+       round((255 * (TotalValue - MIN(TotalValue))) / (MAX(TotalValue) - MIN(TotalValue) + 0.1), 0) As Color,
+	   Latitude,
+	   Longitude,
+	   ParentName,
+	   DefaultZoom,
+	   CanDrillDown,
+	   Address,
+	   "Level",
+	   TotalValue
+	FROM
+    (
+       SELECT Name,
+	   Latitude,
+	   Longitude,
+	   ParentName,
+	   DefaultZoom,
+	   CanDrillDown,
+	   Address,
+	   "Level",
+	   (SELECT SUM(td.Value) FROM NPMLBI.TestData As td WHERE td.UKR->ParentName = ukr.Name) As TotalValue	
+	   FROM NPMLBI.UkraineMap As ukr
+	   WHERE "Level" = 1 :parentNameCondition
+	)	   
+)
+]]]]><![CDATA[></xml>
+]]></Data>
+</XData>
+
+<XData name="sqlLevelTwo">
+<Description>
+Города в области, маркеры. (уровнеь 2)</Description>
+<Data><![CDATA[
+<xml><![CDATA[
+SELECT Name,
+       NULL As Color,
+	   Latitude,
+	   Longitude,
+	   ParentName,
+	   DefaultZoom,
+	   CanDrillDown,
+	   Address,
+	   "Level",
+	   (SELECT td.Value FROM NPMLBI.TestData As td WHERE td.UKR->Name = ukr.Name) As TotalValue,
+	   MainCity As SpecialIcon
+FROM NPMLBI.UkraineMap As ukr
+WHERE "Level" = 2 AND ParentName = ':parentName'
+]]]]><![CDATA[></xml>
+]]></Data>
+</XData>
+
+<Method name="GetStringFromXData">
+<Description>
+Извлечение SQL-запроса из блока XData с указанным именем</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>name:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	#dim sc As %Status
+	#dim result As %String = ""
+	
+	#dim xdata As %Persistent = ##class(%Dictionary.CompiledXData).%OpenId(..%ClassName(1) _ "||" _ name,, .sc)
+	if $$$ISOK(sc) && $isObject(xdata)
+	{
+		#dim node As %XML.TextReader
+		set sc = ##class(%XML.TextReader).ParseStream(xdata.Data, .node)
+		if $$$ISOK(sc)
+		{
+			do node.MoveToContent()
+			while (node.NodeType '= "chars") && (node.NodeType '= "cdata") && node.Read() {}
+			
+			if (node.NodeType = "chars") || (node.NodeType = "cdata") set result = node.Value
+		}
+	}	
+	
+	quit result
+]]></Implementation>
+</Method>
+</Class>
+</Export>

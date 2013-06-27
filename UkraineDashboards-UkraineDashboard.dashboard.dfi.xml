@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Document name="UkraineDashboards-UkraineDashboard.dashboard.DFI">
+<dashboard xmlns="http://www.intersystems.com/deepsee/library" name="UkraineDashboard" folderName="UkraineDashboards" title="" description="" keywords="" owner="" shared="true" public="true" locked="false" resource="" timeCreated="2013-06-22T08:29:13.458Z" createdBy="_SYSTEM" category="" bookCover="" scheme="" worklistCount="0" snapTo="true" snapGrid="true" gridRows="10" gridCols="10" canResize="true" canModify="true" showTitleBar="true" companyName="" companyLogo="" companyStyle="">
+  <widget name="Map" type="portlet" subtype="NPMLBI.UkraineMapPortlet" subtypeClass="" title="" dataSource="NPMLBI/UkraineMapKPI.kpi" dataLink="" drillDownDataSource="" width="200" height="200" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" homeRowL="0" homeColL="0" colSpanL="10" rowSpanL="10" showToolbar="true" theme="">
+    <control name="" action="applyFilter" target="" targetProperty="LevelFilter" location="widget" type="hidden" controlClass="" label="Родитель" title="" value="" text="" readOnly="false" valueList="" displayList="" activeWhen=""></control>
+    <control name="" action="applyFilter" target="" targetProperty="LevelStart" location="widget" type="dropdown" controlClass="" label="Начальный уровень" title="" value="0" text="" readOnly="false" valueList="0,1" displayList="Регионы Украины,Области Украины" activeWhen=""></control>
+    <property name="additionalInfo">тыс. чел.</property>
+    <property name="additionalInfoProperty">TotalValue</property>
+    <property name="colorProperty">Color</property>
+    <property name="coordsJsFile">polygonsUKR.js</property>
+    <property name="coordsProperty">Name</property>
+    <property name="fillOpacity">0.4</property>
+    <property name="hoverOpacity">0.2</property>
+    <property name="latitude">48.7</property>
+    <property name="latitudeProperty">Latitude</property>
+    <property name="longitude">32.28</property>
+    <property name="longitudeProperty">Longitude</property>
+    <property name="markerDataProperties">Name,Level,DefaultZoom,Address,CanDrillDown,TotalValue,SpecialIcon</property>
+    <property name="markerIcon">http://i.imgur.com/pBB7MYT.png</property>
+    <property name="markerIconProperty"></property>
+    <property name="markerSpecialIcon">http://i.imgur.com/bFJRQfv.png</property>
+    <property name="markerSpecialProperty">SpecialIcon</property>
+    <property name="markerTitleProperty">Name</property>
+    <property name="onclickmarker"><![CDATA[
+    
+    	if (marker.data.CanDrillDown == 1) 
+    	{ 
+    		zenThis.drillDown(marker.data.Name, marker.position, marker.data.DefaultZoom, {name: marker.data.Name, level: marker.data.Level}); 
+    	} 
+    	else 
+    	{ 
+    		if (zenThis.win) 
+    			zenThis.win.close(); 
+    		
+    		zenThis.win = zenThis.createInfoWindow(marker, '<div style="font-size: 12px;"><b>' + marker.data.Name + '</b><br/><br/>Населення (тыс. чел.): ' + marker.data.TotalValue + '</div>');
+    	}
+    
+    ]]></property>
+    <property name="onclickpolygon">
+    	if(!zenThis.lastPolygon) 
+    		zenThis.lastPolygon=[];
+    				
+  		zenThis.drillDown(polygon.data.Name, position, polygon.data.DefaultZoom, {name: polygon.data.Name, level: polygon.data.Level}); 
+     	
+     	var opacity = 1;
+     	if(!zenThis.currLevel || zenThis.currLevel == 0)
+     		opacity = 0.3;
+     		
+     	zenThis.currentPolygon = new google.maps.Polygon({fillOpacity: 0.02, strokeColor: polygon.data.Color, strokeOpacity: opacity, paths: polygon.getPaths(), clickable: false, map: zenThis.getMapObject()});
+    	zenThis.lastPolygon.push(zenThis.currentPolygon);
+    </property>
+    <property name="ondrilldown">
+   		if(!zenThis.lastVal) 
+    		zenThis.lastVal=[];
+    		 
+   		if(!zenThis.lastLevel) 
+   		 	zenThis.lastLevel=[];
+   		 	 
+   		if (!zenThis.currVal) 
+   			zenThis.currVal='-'; 
+   		
+   		if (!zenThis.currLevel) 
+   			zenThis.currLevel=''; 
+   			
+   		zenThis.lastVal.push(zenThis.currVal); 
+   		zenThis.lastLevel.push(zenThis.currLevel); 
+   		zenThis.currVal=data.name; 
+   		zenThis.currLevel=data.level; 
+   		zenPage.dashboardEventHandler(zenThis,'click', zenThis.currLevel + ';' + zenThis.currVal, 'applyFilter', '*', 'LevelFilter');
+   	</property>
+    <property name="ondrillup">
+    if (zenThis.lastVal)  
+	{  
+		zenThis.currVal = zenThis.lastVal.pop();
+		zenThis.currLevel = zenThis.lastLevel.pop();
+  		zenThis.currentPolygon = zenThis.lastPolygon.pop();
+		
+		zenPage.dashboardEventHandler(zenThis, 'click', zenThis.currLevel + ';' + zenThis.currVal, 'applyFilter', '*', 'LevelFilter');          
+	
+		if (zenThis.currentPolygon)          
+			zenThis.currentPolygon.setMap(null);
+	}
+	</property>
+    <property name="polygonDataProperties">Name,Level,DefaultZoom,Color,TotalValue</property>
+    <property name="polygonTitleProperty">Name</property>
+    <property name="strokeOpacity">1</property>
+    <property name="strokeWeight">1.2</property>
+    <property name="zoom">6</property>
+  </widget>
+</dashboard>
+</Document></Export>

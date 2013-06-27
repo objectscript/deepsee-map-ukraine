@@ -1,0 +1,1110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<CSP name="NPMLBI.js" application="/csp/user/" default="1"><![CDATA[
+/*** Zen Module: NPMLBI ***/
+
+self._zenClassIdx['http://www.intersystems.com/deepsee/UkraineMapPortlet'] = 'NPMLBI_UkraineMapPortlet';
+self.NPMLBI_UkraineMapPortlet = function(index,id) {
+	if (index>=0) {NPMLBI_UkraineMapPortlet__init(this,index,id);}
+}
+
+self.NPMLBI_UkraineMapPortlet__init = function(o,index,id) {
+	('undefined' == typeof _DeepSee_Component_Portlet_abstractPortlet__init) ?zenMaster._DeepSee_Component_Portlet_abstractPortlet__init(o,index,id):_DeepSee_Component_Portlet_abstractPortlet__init(o,index,id);
+	o.additionalInfo = '';
+	o.additionalInfoProperty = '';
+	o.colorProperty = '';
+	o.controller = '';
+	o.controllerId = '';
+	o.coordsJsFile = '';
+	o.coordsProperty = '';
+	o.drillUpButtonPosition = 'top';
+	o.fillOpacity = '';
+	o.fillOpacityProperty = '';
+	o.hoverOpacity = '';
+	o.isClickableProperty = '';
+	o.latitude = '50.3';
+	o.latitudeProperty = '';
+	o.longitude = '30.3';
+	o.longitudeProperty = '';
+	o.mapType = 'ROADMAP';
+	o.markerDataProperties = '';
+	o.markerIcon = '';
+	o.markerIconProperty = '';
+	o.markerIconSize = '';
+	o.markerSpecialIcon = '';
+	o.markerSpecialProperty = '';
+	o.markerTitleProperty = '';
+	o.markersDraggable = false;
+	o.onaddmarker = '';
+	o.onaddpolygon = '';
+	o.onapplyfilters = '';
+	o.onclickmarker = '';
+	o.onclickpolygon = '';
+	o.ondrilldown = '';
+	o.ondrillup = '';
+	o.ongetcontroller = '';
+	o.onnotifyView = '';
+	o.polygonDataProperties = '';
+	o.polygonTitleProperty = '';
+	o.strokeOpacity = '';
+	o.strokeWeight = '';
+	o.zoom = '12';
+}
+function NPMLBI_UkraineMapPortlet_serialize(set,s)
+{
+	var o = this;s[0]='2044044018';s[1]=o.index;s[2]=o.id;s[3]=o.name;s[4]=set.addObject(o.parent,'parent');s[5]=set.addObject(o.composite,'composite');s[6]=o.additionalInfo;s[7]=o.additionalInfoProperty;s[8]=o.align;s[9]=o.aux;s[10]=o.colorProperty;s[11]=o.containerStyle;s[12]=o.controller;s[13]=o.controllerId;s[14]=o.coordsJsFile;s[15]=o.coordsProperty;s[16]=(o.dragEnabled?1:0);s[17]=o.drillUpButtonPosition;s[18]=(o.dropEnabled?1:0);s[19]=(o.dynamic?1:0);s[20]=o.enclosingClass;s[21]=o.enclosingStyle;s[22]=o.error;s[23]=o.fillOpacity;s[24]=o.fillOpacityProperty;s[25]=o.height;s[26]=(o.hidden?1:0);s[27]=o.hint;s[28]=o.hintClass;s[29]=o.hintStyle;s[30]=o.hoverOpacity;s[31]=o.isClickableProperty;s[32]=o.label;s[33]=o.labelClass;s[34]=o.labelDisabledClass;s[35]=o.labelStyle;s[36]=o.latitude;s[37]=o.latitudeProperty;s[38]=o.longitude;s[39]=o.longitudeProperty;s[40]=o.mapType;s[41]=o.markerDataProperties;s[42]=o.markerIcon;s[43]=o.markerIconProperty;s[44]=o.markerIconSize;s[45]=o.markerSpecialIcon;s[46]=o.markerSpecialProperty;s[47]=o.markerTitleProperty;s[48]=(o.markersDraggable?1:0);s[49]=o.onaddmarker;s[50]=o.onaddpolygon;s[51]=o.onafterdrag;s[52]=o.onapplyfilters;s[53]=o.onbeforedrag;s[54]=o.onclickmarker;s[55]=o.onclickpolygon;s[56]=o.ondrag;s[57]=o.ondrilldown;s[58]=o.ondrillup;s[59]=o.ondrop;s[60]=o.ongetcontroller;s[61]=o.onhide;s[62]=o.onnotifyView;s[63]=o.onrefresh;s[64]=o.onshow;s[65]=o.onupdate;s[66]=o.overlayMode;s[67]=o.polygonDataProperties;s[68]=o.polygonTitleProperty;s[69]=o.renderFlag;s[70]=(o.showLabel?1:0);s[71]=o.slice;s[72]=o.strokeOpacity;s[73]=o.strokeWeight;s[74]=o.title;s[75]=o.tuple;s[76]=o.valign;s[77]=(o.visible?1:0);s[78]=o.width;s[79]=o.zoom;
+}
+function NPMLBI_UkraineMapPortlet_getSettings(s)
+{
+	s['name'] = 'string';
+	s['additionalInfo'] = 'string';
+	s['additionalInfoProperty'] = 'string';
+	s['colorProperty'] = 'string';
+	s['controllerId'] = 'id';
+	s['coordsJsFile'] = 'string';
+	s['coordsProperty'] = 'string';
+	s['drillUpButtonPosition'] = 'enum:op,bottom';
+	s['fillOpacity'] = 'string';
+	s['fillOpacityProperty'] = 'string';
+	s['hoverOpacity'] = 'string';
+	s['isClickableProperty'] = 'string';
+	s['latitude'] = 'float';
+	s['latitudeProperty'] = 'string';
+	s['longitude'] = 'float';
+	s['longitudeProperty'] = 'string';
+	s['mapType'] = 'enum:ROADMAP,SATELLITE,HYBRID,TERRAIN';
+	s['markerDataProperties'] = 'string';
+	s['markerIcon'] = 'string';
+	s['markerIconProperty'] = 'string';
+	s['markerIconSize'] = 'string';
+	s['markerSpecialIcon'] = 'string';
+	s['markerSpecialProperty'] = 'string';
+	s['markerTitleProperty'] = 'string';
+	s['markersDraggable'] = 'boolean';
+	s['onaddmarker'] = 'eventHandler';
+	s['onaddpolygon'] = 'eventHandler';
+	s['onapplyfilters'] = 'eventHandler';
+	s['onclickmarker'] = 'eventHandler';
+	s['onclickpolygon'] = 'eventHandler';
+	s['ondrilldown'] = 'eventHandler';
+	s['ondrillup'] = 'eventHandler';
+	s['ongetcontroller'] = 'eventHandler';
+	s['onnotifyView'] = 'eventHandler';
+	s['polygonDataProperties'] = 'string';
+	s['polygonTitleProperty'] = 'string';
+	s['strokeOpacity'] = 'string';
+	s['strokeWeight'] = 'string';
+	s['zoom'] = 'integer';
+	this.invokeSuper('getSettings',arguments);
+}
+
+self.NPMLBI_UkraineMapPortlet_acquireData = function() {
+var controller = this.getController();
+if (null == controller) {
+this.connectToController();
+controller = this.getController();
+}
+this._markerData = [];
+if (controller && (this.latitudeProperty != '') && (this.longitudeProperty != ''))
+{
+var dims = controller.getDimensions();
+var invert = controller.getSelectedRange;
+if (!invert) {
+var seriesSize = controller.getDimSize(1);
+var seriesCount = controller.getDimSize(2);
+var labelDim = 2;
+var titleCol = -1;
+var latCol = -1;
+var longCol = -1;
+var clickableCol = -1;
+var miCol = -1;
+var addInfoCol = -1;
+var specIconCol = -1;
+}
+else {
+var seriesSize = controller.getDimSize(2);
+var seriesCount = controller.getDimSize(1);
+var labelDim = 1;
+}
+if (seriesCount > 0)
+{
+if (!invert)
+for (var p = 0; p < seriesSize; p++)
+{
+var pname = controller.getPropertyName(p);
+if (pname == this.latitudeProperty) {
+latCol = p;
+}
+if (pname == this.longitudeProperty) {
+longCol = p;
+}
+if (pname == this.markerTitleProperty) {
+titleCol = p;
+}
+if (pname == this.isClickableProperty) {
+clickableCol = p;
+}
+if (pname == this.markerIconProperty) {
+miCol = p;
+}
+if (pname == this.additionalInfoProperty) {
+addInfoCol = p;
+}
+if (pname == this.markerSpecialProperty) {
+specIconCol = p;
+}
+}
+if (invert || (latCol >= 0 && longCol >= 0))
+for (var n = 0; n < seriesCount; n++)
+{
+var isClickable = 1;
+var mi = null;
+var specIcon = 0;
+var addInfo = 0;
+var sname = controller.getLabel(n,labelDim);
+if (!invert) {
+var lat = controller.getData(latCol,n);
+var long = controller.getData(longCol,n);
+if (titleCol >= 0) sname = controller.getData(titleCol,n);
+if (clickableCol >= 0) isClickable = controller.getData(clickableCol,n);
+if (miCol >= 0) mi = controller.getData(miCol,n);
+if (specIconCol >= 0) specIcon = controller.getData(specIconCol,n);
+if (addInfoCol >= 0) addInfo = controller.getData(addInfoCol,n);
+}
+else {
+var lat = controller.getDataByName(this.latitudeProperty,n);
+var long = controller.getDataByName(this.longitudeProperty,n);
+if (this.markerTitleProperty != '') sname = controller.getDataByName(this.markerTitleProperty,n);
+if (this.isClickableProperty != '') isClickable = controller.getDataByName(this.isClickableProperty,n);
+if (this.markerIconProperty != '') mi = controller.getDataByName(this.markerIconProperty,n);
+if (this.markerSpecialProperty != '') specIcon = controller.getDataByName(this.markerSpecialProperty,n);
+if (this.additionalInfoProperty != '') addInfo = controller.getDataByName(this.additionalInfoProperty,n);
+}
+if (!isNaN(parseFloat(lat)) && !isNaN(parseFloat(long))) {
+var data = [];
+if (this.markerDataProperties != '')
+{
+var props = this.markerDataProperties.split(",");
+for (var i = 0; i < props.length; i++) {
+data[props[i]] = controller.getDataByName(props[i],n);
+}
+}
+if (!mi) mi = this.markerIcon;
+this._markerData[this._markerData.length] = {
+title: sname,
+latitude: lat,
+longitude: long,
+isClickable: (!isClickable ? 1 : isClickable),
+icon: mi,
+specialIcon: specIcon,
+additionalInfoValue: addInfo,
+data: data
+};
+}
+}
+}
+}
+this._polygonData = [];
+if (this.coordsJsFile && !this._polygonCoords)
+{
+this._polygonCoords = [];
+loadCoordinates(this._polygonCoords);
+}
+if (controller && (this.coordsProperty != ''))
+{
+var dims = controller.getDimensions();
+var invert = controller.getSelectedRange;
+if (!invert) {
+var seriesSize = controller.getDimSize(1);
+var seriesCount = controller.getDimSize(2);
+var labelDim = 2;
+var titleCol = -1;
+var coordsCol = -1;
+var colorCol = -1;
+var foCol = -1;
+var clickableCol = -1;
+var addInfoCol = -1;
+}
+else {
+var seriesSize = controller.getDimSize(2);
+var seriesCount = controller.getDimSize(1);
+var labelDim = 1;
+}
+if (seriesCount > 0)
+{
+if (!invert)
+for (var p = 0; p < seriesSize; p++)
+{
+var pname = controller.getPropertyName(p);
+if (pname == this.coordsProperty) {
+coordsCol = p;
+}
+if (pname == this.colorProperty) {
+colorCol = p;
+}
+if (pname == this.fillOpacityProperty) {
+foCol = p;
+}
+if (pname == this.isClickableProperty) {
+clickableCol = p;
+}
+if (pname == this.polygonTitleProperty) {
+titleCol = p;
+}
+if (pname == this.additionalInfoProperty) {
+addInfoCol = p;
+}
+}
+for (var n = 0; n < seriesCount; n++)
+{
+var color = 'purple';
+var fo = this.fillOpacity;  // default opacity
+var isClickable = 1;
+var addInfo = 0;
+var sname = controller.getLabel(n,labelDim);
+if (!invert) {
+if (coordsCol<0) break;
+var coords = controller.getData(coordsCol,n);
+if (colorCol >= 0) color = controller.getData(colorCol,n);
+if (foCol >= 0) fo = controller.getData(foCol,n);
+if (clickableCol >= 0) isClickable = controller.getData(clickableCol,n);
+if (titleCol >= 0) sname = controller.getData(titleCol,n);
+if (addInfoCol >= 0) addInfo = controller.getData(addInfoCol,n);
+}
+else {
+var coords = controller.getDataByName(this.coordsProperty,n);
+if (this.colorProperty != '') color = controller.getDataByName(this.colorProperty,n);
+if (this.fillOpacityProperty != '') fo = controller.getDataByName(this.fillOpacityProperty,n);
+if (this.isClickableProperty != '') isClickable = controller.getDataByName(this.isClickableProperty,n);
+if (this.polygonTitleProperty != '') sname = controller.getDataByName(this.polygonTitleProperty,n);
+if (this.additionalInfoProperty != '') addInfo = controller.getDataByName(this.additionalInfoProperty,n);
+}
+if (!fo) fo = this.fillOpacity;  // default opacity
+if (this.coordsJsFile) coords = this._polygonCoords[coords];
+if (!coords) continue;
+var pathsSets = coords.split(";");
+for (var j = 0; j < pathsSets.length; j++) {
+var paths = pathsSets[j].split(" ");
+for (var i = 0; i < paths.length; i++) {
+var p = paths[i].split(",")
+paths[i] = new google.maps.LatLng(p[1], p[0], p[2]);
+}
+pathsSets[j] = paths;
+}
+var data = [];
+if (this.polygonDataProperties != '')
+{
+var props = this.polygonDataProperties.split(",");
+for (var i = 0; i < props.length; i++) {
+data[props[i]] = controller.getDataByName(props[i],n);
+}
+}
+this._polygonData[this._polygonData.length] = {
+title: sname,
+coords: pathsSets,
+color: (!color ? 'purple' : color),
+fo: (!fo ? 0.1 : fo),
+isClickable: (!isClickable ? 1 : isClickable),
+additionalInfoValue: addInfo,
+data: data
+};
+}
+}
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_addMarker = function(id,latitude,longitude,title,isClickable,icon,data) {
+var marker = null;
+var map = this.getMapObject();
+if (map && !isNaN(parseFloat(latitude)) && !isNaN(parseFloat(longitude))) {
+var mapLatlng = new google.maps.LatLng(parseFloat(latitude), parseFloat(longitude));
+marker = new google.maps.Marker({
+position: mapLatlng,
+map: map,
+draggable: this.markersDraggable,
+title:title,
+clickable: (isClickable == 1),
+icon: (icon ? (this.markerIconSize ? new google.maps.MarkerImage(icon, null, null, null, new google.maps.Size(this.markerIconSize, this.markerIconSize)) : icon) : null),
+data: data});
+marker._id = id;
+var index = this._markers.length;
+this._markers[index] = marker;
+if (this.markersDraggable) {
+var code = new Function('zenPage.getComponent('+this.index+').markerDragEndHandler("'+index+'");');
+google.maps.event.addListener(marker, 'dragend', code);
+}
+var code = new Function('zenPage.getComponent('+this.index+').markerClickHandler("'+index+'");');
+google.maps.event.addListener(marker, 'click', code);
+}
+return marker;
+}
+
+self.NPMLBI_UkraineMapPortlet_addPolygon = function(id,coords,color,fo,isClickable,title,data) {
+var polygon = null;
+var map = this.getMapObject();
+if (map)
+{
+if (color.substring(0, 4) === "rgb(" && color.indexOf(")") == (color.length - 1) && color.indexOf(".") > -1)
+{
+var colorAr = color.substring(4, color.length - 1).split(",");
+color = "rgb(" + String(parseFloat(colorAr[0])).split(".")[0] + "," + String(parseFloat(colorAr[1])).split(".")[0] + "," + String(parseFloat(colorAr[2])).split(".")[0] + ")";
+}
+polygon = new google.maps.Polygon({
+tooltip: '',
+title: title,
+fillColor: (color.substring(0, "hsv2rgb".length) === "hsv2rgb" ? eval(color) : color),
+fillOpacity: fo,
+clickable: (isClickable == 1),
+strokeColor: (color.substring(0, "hsv2rgb".length) === "hsv2rgb" ? eval(color) : color),
+strokeOpacity: (this.strokeOpacity ? this.strokeOpacity : 0.5),
+strokeWeight: (this.strokeWeight ? this.strokeWeight : 3),
+paths: coords,
+map: map,
+data: data,
+defaultFO: fo});
+polygon._id = id;
+var index = this._polygons.length;
+this._polygons[index] = polygon;
+var code = new Function('event', 'zenPage.getComponent('+this.index+').polygonClickHandler("'+index+'", event);');
+google.maps.event.addListener(polygon, 'click', code);
+code = new Function('event', 'zenPage.getComponent('+this.index+').polygonMouseOver("'+index+'", event);');
+google.maps.event.addListener(polygon, 'mouseover', code);
+code = new Function('event', 'zenPage.getComponent('+this.index+').polygonMouseMove("'+index+'", event);');
+google.maps.event.addListener(polygon, 'mousemove', code);
+code = new Function('event', 'zenPage.getComponent('+this.index+').polygonMouseOut("'+index+'", event);');
+google.maps.event.addListener(polygon, 'mouseout', code);
+}
+return polygon;
+}
+
+self.NPMLBI_UkraineMapPortlet_centerChangedHandler = function() {
+if (this._drillDownTitle.length > 0) this._drillDownTitle[this._drillDownTitle.length - 1].draw();
+}
+
+self.NPMLBI_UkraineMapPortlet_clearMarkers = function() {
+try {
+if (this._markers) {
+for (var n = 0; n < this._markers.length; n++) {
+this.removeMarker(this._markers[n]);
+}
+}
+this._markers = [];
+}
+catch(ex) {
+alert('Error in clearMarkers ' + ex.message);
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_clearPolygons = function() {
+try {
+if (this._polygons) {
+for (var n = 0; n < this._polygons.length; n++) {
+this.removePolygon(this._polygons[n]);
+}
+}
+this._polygons = [];
+}
+catch(ex) {
+alert('Error in clearPolygons ' + ex.message);
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_connectToController = function() {
+this.controller = '';
+if (!zenIsMissing(this.controllerId)) {
+if (this.composite) {
+this.controller = this.composite.getChildById(this.controllerId);
+}
+else {
+this.controller = zenPage.getComponentById(this.controllerId);
+}
+if (this.controller && this.controller.register) {
+this.controller.register(this);
+}
+else {
+alert('ZEN: Unable to connect component to dataController (' + this.id + ').');
+}
+if (this.controller) {
+if ('' == this.controller.modelError) {
+this.controller.loadModel(false);
+}
+}
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_createInfoWindow = function(marker,content) {
+var map = this.getMapObject();
+if (map && marker) {
+var infoWindow = new google.maps.InfoWindow({content: content});
+infoWindow.open(map,marker);
+return infoWindow;
+}
+else
+{
+return null;
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_createInfoWindowAtPosition = function(position,content) {
+var map = this.getMapObject();
+if (map && position) {
+var infoWindow = new google.maps.InfoWindow({content: content});
+infoWindow.position = position;
+infoWindow.open(map);
+return infoWindow;
+}
+else
+{
+return null;
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_disconnectFromController = function() {
+if (this.controller && this.controller.unregister) {
+this.controller.unregister(this);
+}
+this.controller = '';
+}
+
+self.NPMLBI_UkraineMapPortlet_dragendHandler = function() {
+var map = this.getMapObject();
+if (map) {
+var latLng = map.getCenter();
+this.latitude = latLng.lat();
+this.longitude = latLng.lng();
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_drillDown = function(title,latLng,zoom,data) {
+var map = this.getMapObject();
+if (map)
+{
+this._prevZoom.push(map.getZoom());
+this._prevCenter.push(map.getCenter());
+map.setZoom(parseInt(zoom));
+map.setCenter(latLng);
+if (this._drillDownTitle.length > 0) this._drillDownTitle[this._drillDownTitle.length - 1].hide();
+this._drillDownTitle.push(this.newDrillDownTitleOverlay(map, 'zenPage.getComponent('+this.index+').drillUp();', title, this.drillUpButtonPosition));
+this._drillDownTitle[this._drillDownTitle.length - 1].show();
+zenInvokeCallbackMethod(this.ondrilldown,this,'ondrilldown','data',data);
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_drillUp = function() {
+var map = this.getMapObject();
+if (map)
+{
+if (this._drillDownTitle.length > 0)
+{
+this._drillDownTitle[this._drillDownTitle.length - 1].hide();
+this._drillDownTitle[this._drillDownTitle.length - 1].setMap(null);
+this._drillDownTitle.pop();
+if (this._drillDownTitle.length > 0) this._drillDownTitle[this._drillDownTitle.length - 1].show();
+}
+if (this._prevZoom.length > 0)
+{
+map.setZoom(this._prevZoom[this._prevZoom.length - 1]);
+this._prevZoom.pop();
+}
+if (this._prevCenter.length > 0)
+{
+map.setCenter(this._prevCenter[this._prevCenter.length - 1]);
+this._prevCenter.pop();
+}
+zenInvokeCallbackMethod(this.ondrillup,this,'ondrillup');
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_geocodeAddressHandler = function(results,status) {
+if (status == google.maps.GeocoderStatus.OK) {
+var map = this.getMapObject();
+if (map) {
+map.setCenter(results[0].geometry.location);
+}
+}
+else {
+alert("Address not found: " + status);
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_getControl = function(ind) {
+return zenPage.getComponent(this.parent.parent.controlIndices[ind]);
+}
+
+self.NPMLBI_UkraineMapPortlet_getController = function() {
+if (this.ongetcontroller) {
+return zenInvokeCallbackMethod(this.ongetcontroller,this,'ongetcontroller','view',this);
+}
+return (null == this.controller || '' == this.controller) ? null : this.controller;
+}
+
+self.NPMLBI_UkraineMapPortlet_getFilterStateArray = function() {
+return this.parent.parent.getFilterStateArray();
+}
+
+self.NPMLBI_UkraineMapPortlet_getMapObject = function() {
+return this._mapObject;
+}
+
+self.NPMLBI_UkraineMapPortlet_getMapTypeId = function(type) {
+if (('undefined' == typeof google)||('undefined' == typeof google.maps)) {
+return '';
+}
+var mapType = google.maps.MapTypeId.ROADMAP;
+switch (type) {
+case 'HYBRID':
+mapType = google.maps.MapTypeId.HYBRID;
+break;
+case 'SATELLITE':
+mapType = google.maps.MapTypeId.SATELLITE;
+break;
+case 'TERRAIN':
+mapType = google.maps.MapTypeId.TERRAIN;
+break;
+case 'ROADMAP':
+default:
+break;
+}
+return mapType;
+}
+
+self.NPMLBI_UkraineMapPortlet_getMarker = function(index) {
+return this._markers ? this._markers[index] : null;
+}
+
+self.NPMLBI_UkraineMapPortlet_getPolygon = function(index) {
+return this._polygons ? this._polygons[index] : null;
+}
+
+self.NPMLBI_UkraineMapPortlet_initMap = function(mapDiv) {
+if (('undefined' == typeof google)||('undefined' == typeof google.maps)) {
+mapDiv.innerHTML = $$$Text('Unable to load google map api.');
+return;
+}
+var mapTypeId = this.getMapTypeId(this.mapType);
+this.latitude = parseFloat(this.latitude);
+if (isNaN(this.latitude)) this.latitude = 42.36;
+this.longitude = parseFloat(this.longitude);
+if (isNaN(this.longitude)) this.longitude = 288.92;
+var mapLatlng = new google.maps.LatLng(this.latitude, this.longitude);
+this.zoom = parseInt(this.zoom, 10);
+if (isNaN(this.zoom)) this.zoom = 0;
+var mapOptions = {
+zoom: this.zoom,
+center: mapLatlng,
+mapTypeId: mapTypeId
+}
+var map = new google.maps.Map(mapDiv, mapOptions);
+this._mapObject = map;
+this._markers = [];
+this._polygons = [];
+this._prevZoom = [];
+this._prevCenter = [];
+this._drillDownTitle = [];
+var code = new Function('zenPage.getComponent('+this.index+').zoomChangedHandler();');
+google.maps.event.addListener(map, 'zoom_changed', code);
+var code = new Function('zenPage.getComponent('+this.index+').dragendHandler();');
+google.maps.event.addListener(map, 'dragend', code);
+var code = new Function('zenPage.getComponent('+this.index+').centerChangedHandler();');
+google.maps.event.addListener(map, 'center_changed', code);
+}
+
+self.NPMLBI_UkraineMapPortlet_markerClickHandler = function(index) {
+var map = this.getMapObject();
+if (map) {
+var marker = this.getMarker(index);
+if (marker) {
+zenInvokeCallbackMethod(this.onclickmarker,this,'onclickmarker','marker',marker);
+}
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_markerDragEndHandler = function(index) {
+var map = this.getMapObject();
+if (map) {
+var marker = this.getMarker(index);
+if (marker) {
+this.createInfoWindow(marker,'Marker moved to:<br/>' + marker.getPosition());
+}
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_newDrillDownTitleOverlay = function(mapRef,clickHandler,text,drillUpButtonPosition) {
+function DrillDownTitleOverlay(map, onclickHandler, titleText, drillUpButtonPosition)
+{
+this.map_ = map;
+this.div_ = null;
+this.divTitle_ = null;
+this.titleText_ = titleText;
+this.onclickHandler_ = onclickHandler;
+this.rect_ = null;
+this.visible_ = false;
+this.drillUpButtonPosition_ = drillUpButtonPosition;
+this.setMap(map);
+};
+DrillDownTitleOverlay.prototype = new google.maps.OverlayView();
+DrillDownTitleOverlay.prototype.onAdd = function()
+{
+this.visible_ = true;
+}
+DrillDownTitleOverlay.prototype.onRemove = function()
+{
+if (this.div_) this.div_.parentNode.removeChild(this.div_);
+if (this.divTitle_) this.divTitle_.parentNode.removeChild(this.divTitle_);
+if (this.rect_) this.rect_.setMap(null);
+this.div_ = null;
+this.divTitle_ = null;
+this.rect_ = null;
+}
+DrillDownTitleOverlay.prototype.draw = function()
+{
+var overlayProjection = this.getProjection();
+if (this.div_) this.div_.parentNode.removeChild(this.div_);
+if (this.divTitle_) this.divTitle_.parentNode.removeChild(this.divTitle_);
+if (this.rect_) this.rect_.setMap(null);
+var div = document.createElement('div');
+div.appendChild(document.createTextNode('<<  ' + $$$Text("Back", "Ensemble")));
+div.style.border = 'solid 1px #000000';
+div.style.color = '#ffffff';
+div.style.backgroundColor = '#356B8D';
+div.style.MozBoxShadow = '2px 2px 4px #7f7f7f';
+div.style.boxShadow = '2px 2px 4px #7f7f7f';
+div.style.whiteSpace = 'nowrap';
+div.style.font = 'icon';
+if (navigator.userAgent.indexOf("Safari")>=0 || navigator.userAgent.indexOf("Chrome")>=0)
+{
+div.style.fontFamily = "Tahoma,sans-serif";
+div.style.fontSize = "13px";
+}
+div.style.padding = '2px 8px';
+div.style.position = 'absolute';
+div.style.display = 'block';
+div.style.visibility = (this.visible_ ? "visible" : "hidden");
+this.div_ = div;
+var div2 = document.createElement('div');
+div2.appendChild(document.createTextNode(this.titleText_));
+div2.style.border = 'solid 1px #000000';
+div2.style.color = '#000000';
+if (navigator.userAgent.indexOf("MSIE")>=0)
+{
+div2.style.backgroundColor = 'white';
+}
+else
+{
+div2.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+}
+div2.style.MozBoxShadow = '2px 2px 4px #7f7f7f';
+div2.style.boxShadow = '2px 2px 4px #7f7f7f';
+div2.style.whiteSpace = 'nowrap';
+div2.style.font = 'icon';
+if (navigator.userAgent.indexOf("Safari")>=0 || navigator.userAgent.indexOf("Chrome")>=0)
+{
+div2.style.fontFamily = "Tahoma,sans-serif";
+div2.style.fontSize = "13px";
+}
+div2.style.fontWeight = 'bold';
+div2.style.padding = '2px 8px';
+div2.style.position = 'absolute';
+div2.style.display = 'block';
+div2.style.visibility = (this.visible_ ? "visible" : "hidden");
+this.divTitle_ = div2;
+var panes = this.getPanes();
+panes.floatPane.appendChild(this.div_);
+panes.floatPane.appendChild(this.divTitle_);
+if (this.drillUpButtonPosition_ == 'bottom')
+{
+var x = 12
+var y = parseInt(this.map_.getDiv().style.height) - 50
+}
+else
+{
+var x = 70
+var y = 5
+}
+var point = overlayProjection.fromLatLngToDivPixel(overlayProjection.fromContainerPixelToLatLng(new google.maps.Point(x, y)));
+this.div_.style.left = point.x + 'px';
+this.div_.style.top = point.y + 'px';
+var sw = overlayProjection.fromDivPixelToLatLng(new google.maps.Point(point.x, point.y + parseInt(this.div_.offsetHeight)));
+var ne = overlayProjection.fromDivPixelToLatLng(new google.maps.Point(point.x + parseInt(this.div_.offsetWidth), point.y));
+var rectBounds = new google.maps.LatLngBounds(sw, ne);
+this.rect_ = new google.maps.Rectangle({
+bounds: rectBounds,
+clickable: true,
+fillOpacity: 0,
+strokeOpacity: 0,
+map: (this.visible_ ? this.map_ : null)});
+google.maps.event.addListener(this.rect_, 'click', new Function(this.onclickHandler_));
+var point = new google.maps.Point(x + parseInt(this.div_.offsetWidth) - 1, 5);
+point = overlayProjection.fromLatLngToDivPixel(overlayProjection.fromContainerPixelToLatLng(point));
+this.divTitle_.style.left = point.x + 'px';
+this.divTitle_.style.top = this.div_.style.top;
+this.div_.style.height = (parseInt(this.divTitle_.offsetHeight) - 6) + 'px';
+this.divTitle_.style.height = (parseInt(this.divTitle_.offsetHeight) - 6) + 'px';
+}
+DrillDownTitleOverlay.prototype.hide = function()
+{
+if (this.div_) this.div_.style.visibility = "hidden";
+if (this.divTitle_) this.divTitle_.style.visibility = "hidden";
+if (this.rect_) this.rect_.setMap(null);
+this.visible_ = false;
+}
+DrillDownTitleOverlay.prototype.show = function()
+{
+if (this.div_) this.div_.style.visibility = "visible";
+if (this.divTitle_) this.divTitle_.style.visibility = "visible";
+if (this.rect_) this.rect_.setMap(this.map_);
+this.visible_ = true;
+}
+return new DrillDownTitleOverlay(mapRef, clickHandler, text, drillUpButtonPosition);
+}
+
+self.NPMLBI_UkraineMapPortlet_notifyView = function(reason,data1,data2,data3) {
+var ret = true;
+if (this.onnotifyView) {
+ret = zenInvokeCallbackMethod(this.onnotifyView,this,'onnotifyEvent','reason',reason,'data1',data1,'data2',data2,'data3',data3);
+}
+if (ret && this.notifyViewHandler) {
+this.notifyViewHandler(reason,data1,data2,data3);
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_notifyViewHandler = function(reason,data1,data2,data3) {
+switch(reason) {
+case 'dataChange':
+this.onApplyFilters(true);
+case 'modelChange':
+this.acquireData();
+this.syncMarkers();
+this.syncPolygons();
+break;
+case 'seriesChange':
+break;
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_onApplyFilters = function(refresh) {
+zenInvokeCallbackMethod(this.onapplyfilters,this,'onapplyfilters','refresh',refresh);
+}
+
+self.NPMLBI_UkraineMapPortlet_panToAddress = function(address) {
+if (('undefined' == typeof google)||('undefined' == typeof google.maps)) {
+return '';
+}
+var callback = new Function('results','status','zenPage.getComponent('+this.index+').geocodeAddressHandler(results,status)');
+var geocoder = new google.maps.Geocoder();
+geocoder.geocode({ 'address': address}, callback);
+}
+
+self.NPMLBI_UkraineMapPortlet_polygonClickHandler = function(index,event) {
+var map = this.getMapObject();
+if (map) {
+var polygon = this.getPolygon(index);
+if (polygon) {
+if (polygon.tooltip)
+{
+polygon.tooltip.hide();
+clearTimeout(polygon.tooltipTimer);
+}
+zenInvokeCallbackMethod(this.onclickpolygon,this,'onclickpolygon','polygon',polygon,'position',event.latLng);
+}
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_polygonMouseMove = function(index,event) {
+var map = this.getMapObject();
+if (map) {
+var polygon = this.getPolygon(index);
+if (polygon && polygon.tooltip)
+{
+clearTimeout(polygon.tooltipTimer);
+polygon.tooltipTimer = setTimeout('zenPage.getComponent('+this.index+').polygonTooltipTimer('+index+',' + event.latLng.lat() + ',' + event.latLng.lng() + ');', 150);
+}
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_polygonMouseOut = function(index,event) {
+var map = this.getMapObject();
+if (map) {
+var polygon = this.getPolygon(index);
+if (polygon)
+{
+if (polygon.clickable) polygon.setOptions({fillOpacity: polygon.defaultFO});
+if (polygon.tooltip)
+{
+polygon.tooltip.hide();
+clearTimeout(polygon.tooltipTimer);
+}
+}
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_polygonMouseOver = function(index,event) {
+var map = this.getMapObject();
+if (map) {
+var polygon = this.getPolygon(index);
+if (polygon && polygon.clickable) polygon.setOptions({fillOpacity: (this.hoverOpacity ? this.hoverOpacity : 0.35)});
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_polygonTooltipTimer = function(index,lat,lng) {
+var map = this.getMapObject();
+if (map) {
+var polygon = this.getPolygon(index);
+if (polygon && polygon.tooltip) polygon.tooltip.show(new google.maps.LatLng(lat, lng));
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_removeMarker = function(marker) {
+try {
+marker.setMap(null);
+}
+catch(ex) {
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_removePolygon = function(polygon) {
+try {
+if (polygon.tooltip) polygon.tooltip.setMap(null);
+polygon.setMap(null);
+}
+catch(ex) {
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_renderContents = function() {
+this._mapObject = null;
+var mapDiv = this.getEnclosingDiv();
+if (mapDiv == null) return;
+var width = isNaN(parseFloat(this.width)) ? 200 : parseFloat(this.width);
+var height = isNaN(parseFloat(this.height)) ? 200 : parseFloat(this.height);
+if ('' == this.enclosingStyle) {
+mapDiv.style.width = width + 'px';
+mapDiv.style.height = height + 'px';
+}
+this.acquireData();
+this.initMap(mapDiv);
+this.syncMarkers();
+this.syncPolygons();
+zenPage.dashboardEventHandler('', '', '', 'refresh', '*', '');
+}
+
+self.NPMLBI_UkraineMapPortlet_sendEventToController = function(reason,data1,data2,data3) {
+var controller = this.getController();
+if (controller && controller.notifyController) {
+controller.notifyController(this,reason,data1,data2,data3);
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_setAdditionalInfo = function(data) {
+if(this.additionalInfo != "")
+data.title = data.title  + ' (' + ((data.additionalInfoValue) ? data.additionalInfoValue + ' ' + this.additionalInfo + ')' : 'нет данных)');
+}
+
+self.NPMLBI_UkraineMapPortlet_setControllerId = function(id) {
+this.disconnectFromController();
+this.controllerId = id;
+this.connectToController();
+}
+
+self.NPMLBI_UkraineMapPortlet_setProperty = function(property,value,value2) {
+var map = this.getMapObject();
+switch(property) {
+case 'latitude':
+case 'longitude':
+this[property] = value;
+if (map) {
+var mapLatlng = new google.maps.LatLng(parseFloat(this.latitude), parseFloat(this.longitude));
+map.panTo(mapLatlng);
+}
+break;
+case 'zoom':
+this[property] = value;
+if (map) {
+map.setZoom(parseInt(this.zoom,10));
+}
+break;
+case 'mapType':
+this[property] = value;
+if (map) {
+var mapTypeId = this.getMapTypeId(this.mapType);
+map.setMapTypeId(mapTypeId);
+}
+break;
+default:
+return this.invokeSuper('setProperty',arguments);
+}
+return true;
+}
+
+self.NPMLBI_UkraineMapPortlet_syncMarkers = function() {
+try {
+var controller = this.getController();
+if (null == controller) {
+return;
+}
+this.clearMarkers();
+if (this._markerData) {
+for (var n = 0; n < this._markerData.length; n++) {
+var md = this._markerData[n];
+if (md) {
+if(this.markerSpecialIcon != "" && md.specialIcon == 1)
+md.icon = this.markerSpecialIcon;
+this.setAdditionalInfo(md);
+var marker = this.addMarker(n, md.latitude, md.longitude, md.title, md.isClickable, md.icon, md.data);
+if (marker)
+zenInvokeCallbackMethod(this.onaddmarker,this,'onaddmarker','marker',marker);
+}
+}
+}
+}
+catch(ex) {
+alert('Error in syncMarkers ' + ex.message);
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_syncPolygons = function() {
+function TooltipOverlay(map, title)
+{
+this.map_ = map;
+this.div_ = null;
+this.title_ = title;
+this.setMap(map);
+};
+TooltipOverlay.prototype = new google.maps.OverlayView();
+TooltipOverlay.prototype.onAdd = function()
+{
+var div = document.createElement('div');
+div.appendChild(document.createTextNode(this.title_));
+div.style.border = 'solid 1px #000000';
+div.style.color = '#000000';
+div.style.backgroundColor = '#ffffe1';
+div.style.whiteSpace = 'nowrap';
+div.style.font = 'icon';
+if (navigator.userAgent.indexOf("Safari")>=0 || navigator.userAgent.indexOf("Chrome")>=0)
+{
+div.style.fontFamily = "Tahoma,sans-serif";
+div.style.fontSize = "13px";
+}
+div.style.MozBoxShadow = '2px 2px 4px #7f7f7f';
+div.style.boxShadow = '2px 2px 4px #7f7f7f';
+div.style.padding = '2px 3px';
+div.style.position = 'absolute';
+div.style.visibility = "hidden";
+this.div_ = div;
+var panes = this.getPanes();
+panes.floatShadow.appendChild(div);
+}
+TooltipOverlay.prototype.onRemove = function()
+{
+if (this.div_) this.div_.parentNode.removeChild(this.div_);
+this.div_ = null;
+}
+TooltipOverlay.prototype.draw = function() {}
+TooltipOverlay.prototype.hide = function()
+{
+if (this.div_) this.div_.style.visibility = "hidden";
+}
+TooltipOverlay.prototype.show = function(latLng)
+{
+if (this.div_)
+{
+var point = this.getProjection().fromLatLngToDivPixel(latLng)
+this.div_.style.left = point.x + 'px';
+this.div_.style.top = (point.y - parseInt(this.div_.offsetHeight)) + 'px';
+this.div_.style.visibility = "visible";
+}
+}
+var map = this.getMapObject();
+try {
+var controller = this.getController();
+if (null == controller) {
+return;
+}
+this.clearPolygons();
+if (this._polygonData) {
+for (var n = 0; n < this._polygonData.length; n++) {
+var md = this._polygonData[n];
+if (md) {
+var poly = this.addPolygon(n, md.coords, md.color, md.fo, md.isClickable, md.title, md.data);
+this.setAdditionalInfo(md);
+if (poly && map && md.title) poly.tooltip = new TooltipOverlay(map, md.title);
+if (poly) zenInvokeCallbackMethod(this.onaddpolygon,this,'onaddpolygon','polygon',poly);
+}
+}
+}
+}
+catch(ex) {
+alert('Error in syncPolygons ' + ex.message);
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_zoomChangedHandler = function() {
+var map = this.getMapObject();
+if (map) {
+this.zoom = map.getZoom();
+}
+}
+
+self.NPMLBI_UkraineMapPortlet_ReallyRefreshContents = function() {
+	zenInstanceMethod(this,'ReallyRefreshContents','','',arguments);
+}
+self.NPMLBI_UkraineMapPortlet__Loader = function() {
+	zenLoadClass('_DeepSee_Component_Portlet_abstractPortlet');
+	NPMLBI_UkraineMapPortlet.prototype = zenCreate('_DeepSee_Component_Portlet_abstractPortlet',-1);
+	var p = NPMLBI_UkraineMapPortlet.prototype;
+	if (null==p) {return;}
+	p.constructor = NPMLBI_UkraineMapPortlet;
+	p.superClass = ('undefined' == typeof _DeepSee_Component_Portlet_abstractPortlet) ? zenMaster._DeepSee_Component_Portlet_abstractPortlet.prototype:_DeepSee_Component_Portlet_abstractPortlet.prototype;
+	p.__ZENcomponent = true;
+	p._serverClass = 'NPMLBI.UkraineMapPortlet';
+	p._type = 'UkraineMapPortlet';
+	p.serialize = NPMLBI_UkraineMapPortlet_serialize;
+	p.getSettings = NPMLBI_UkraineMapPortlet_getSettings;
+	p.ReallyRefreshContents = NPMLBI_UkraineMapPortlet_ReallyRefreshContents;
+	p.acquireData = NPMLBI_UkraineMapPortlet_acquireData;
+	p.addMarker = NPMLBI_UkraineMapPortlet_addMarker;
+	p.addPolygon = NPMLBI_UkraineMapPortlet_addPolygon;
+	p.centerChangedHandler = NPMLBI_UkraineMapPortlet_centerChangedHandler;
+	p.clearMarkers = NPMLBI_UkraineMapPortlet_clearMarkers;
+	p.clearPolygons = NPMLBI_UkraineMapPortlet_clearPolygons;
+	p.connectToController = NPMLBI_UkraineMapPortlet_connectToController;
+	p.createInfoWindow = NPMLBI_UkraineMapPortlet_createInfoWindow;
+	p.createInfoWindowAtPosition = NPMLBI_UkraineMapPortlet_createInfoWindowAtPosition;
+	p.disconnectFromController = NPMLBI_UkraineMapPortlet_disconnectFromController;
+	p.dragendHandler = NPMLBI_UkraineMapPortlet_dragendHandler;
+	p.drillDown = NPMLBI_UkraineMapPortlet_drillDown;
+	p.drillUp = NPMLBI_UkraineMapPortlet_drillUp;
+	p.geocodeAddressHandler = NPMLBI_UkraineMapPortlet_geocodeAddressHandler;
+	p.getControl = NPMLBI_UkraineMapPortlet_getControl;
+	p.getController = NPMLBI_UkraineMapPortlet_getController;
+	p.getFilterStateArray = NPMLBI_UkraineMapPortlet_getFilterStateArray;
+	p.getMapObject = NPMLBI_UkraineMapPortlet_getMapObject;
+	p.getMapTypeId = NPMLBI_UkraineMapPortlet_getMapTypeId;
+	p.getMarker = NPMLBI_UkraineMapPortlet_getMarker;
+	p.getPolygon = NPMLBI_UkraineMapPortlet_getPolygon;
+	p.initMap = NPMLBI_UkraineMapPortlet_initMap;
+	p.markerClickHandler = NPMLBI_UkraineMapPortlet_markerClickHandler;
+	p.markerDragEndHandler = NPMLBI_UkraineMapPortlet_markerDragEndHandler;
+	p.newDrillDownTitleOverlay = NPMLBI_UkraineMapPortlet_newDrillDownTitleOverlay;
+	p.notifyView = NPMLBI_UkraineMapPortlet_notifyView;
+	p.notifyViewHandler = NPMLBI_UkraineMapPortlet_notifyViewHandler;
+	p.onApplyFilters = NPMLBI_UkraineMapPortlet_onApplyFilters;
+	p.panToAddress = NPMLBI_UkraineMapPortlet_panToAddress;
+	p.polygonClickHandler = NPMLBI_UkraineMapPortlet_polygonClickHandler;
+	p.polygonMouseMove = NPMLBI_UkraineMapPortlet_polygonMouseMove;
+	p.polygonMouseOut = NPMLBI_UkraineMapPortlet_polygonMouseOut;
+	p.polygonMouseOver = NPMLBI_UkraineMapPortlet_polygonMouseOver;
+	p.polygonTooltipTimer = NPMLBI_UkraineMapPortlet_polygonTooltipTimer;
+	p.removeMarker = NPMLBI_UkraineMapPortlet_removeMarker;
+	p.removePolygon = NPMLBI_UkraineMapPortlet_removePolygon;
+	p.renderContents = NPMLBI_UkraineMapPortlet_renderContents;
+	p.sendEventToController = NPMLBI_UkraineMapPortlet_sendEventToController;
+	p.setAdditionalInfo = NPMLBI_UkraineMapPortlet_setAdditionalInfo;
+	p.setControllerId = NPMLBI_UkraineMapPortlet_setControllerId;
+	p.setProperty = NPMLBI_UkraineMapPortlet_setProperty;
+	p.syncMarkers = NPMLBI_UkraineMapPortlet_syncMarkers;
+	p.syncPolygons = NPMLBI_UkraineMapPortlet_syncPolygons;
+	p.zoomChangedHandler = NPMLBI_UkraineMapPortlet_zoomChangedHandler;
+}
+/* EOF */]]></CSP>
+</Export>

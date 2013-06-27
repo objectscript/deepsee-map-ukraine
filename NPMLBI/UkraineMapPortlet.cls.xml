@@ -1,0 +1,1701 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="NPMLBI.UkraineMapPortlet">
+<Description>
+Portlet that displays a clickable google map. Supports 2012.2 and higher versions of Cache.
+Improvements compared to %DeepSee.Component.Widget.map:
+1) Polygon support. In addition to markers, this widget supports clickable colored polygons with tooltips.
+   The "coordsProperty" widget setting should be set to the name of a data source property that provides polygon coordinates. The value of this property is expected to contain one or more ordered sequences of coordinates each of which designates a closed loop.
+   Sequences are delimited by ; (semicolon). Coordinates in such a sequence are delimited by spaces, for example: 42.725042,55.257428,0 42.727162,55.270206,0 42.737196,55.27019,0 42.725042,55.257428,0
+   Each coordinate triple consists of latitude / longitude numbers and a noWrap flag (see http://code.google.com/intl/en/apis/maps/documentation/javascript/reference.html#LatLng for details).
+   An alternative approach is to store polygon coordinates in a static js file rather than in the database. See coordsJsFile property description for details.
+2) Configurable names of data source properties that provide marker and polygon data (latitude, longitude, color, opacity etc).
+3) Configurable "onclick" handler for markers and polygons. Configurable "onaddpolygon" and "onaddmarker" handlers.
+4) Drilldown capabilities.
+5) Convenience javascript methods: createInfoWindowAtPosition() and getControl().</Description>
+<Super>%DeepSee.Component.Portlet.abstractPortlet</Super>
+<TimeCreated>62444,66441.299619</TimeCreated>
+
+<Parameter name="INCLUDEFILES">
+<Default>script:http://maps.google.com/maps/api/js?sensor=false</Default>
+</Parameter>
+
+<Property name="latitude">
+<Description>
+Initial latitude (as a decimal number).</Description>
+<Type>%ZEN.Datatype.float</Type>
+<InitialExpression>50.3</InitialExpression>
+</Property>
+
+<Property name="longitude">
+<Description>
+Initial longitude (as a decimal number).</Description>
+<Type>%ZEN.Datatype.float</Type>
+<InitialExpression>30.3</InitialExpression>
+</Property>
+
+<Property name="zoom">
+<Description>
+Initial zoom level (0 shows entire globe).</Description>
+<Type>%ZEN.Datatype.integer</Type>
+<InitialExpression>12</InitialExpression>
+</Property>
+
+<Property name="mapType">
+<Description>
+Initial map display.</Description>
+<Type>%ZEN.Datatype.string</Type>
+<InitialExpression>"ROADMAP"</InitialExpression>
+<Parameter name="VALUELIST" value=",ROADMAP,SATELLITE,HYBRID,TERRAIN"/>
+</Property>
+
+<Property name="markersDraggable">
+<Description>
+If true, then the markers on this map are draggable.</Description>
+<Type>%ZEN.Datatype.boolean</Type>
+<InitialExpression>0</InitialExpression>
+</Property>
+
+<Property name="latitudeProperty">
+<Description>
+Name of property in data source that provides the latitude value for a marker.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="longitudeProperty">
+<Description>
+Name of property in data source that provides the longitude value for a marker.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="coordsProperty">
+<Description>
+Name of property in data source that provides the coordinates array for a polygon.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="colorProperty">
+<Description>
+Name of property in data source that provides the color of a polygon.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="onclickmarker">
+<Description>
+onclickmarker event handler: if defined, this event is fired when a marker is clicked.</Description>
+<Type>%ZEN.Datatype.eventHandler</Type>
+</Property>
+
+<Property name="onclickpolygon">
+<Description>
+onclickpolygon event handler: if defined, this event is fired when a polygon is clicked.</Description>
+<Type>%ZEN.Datatype.eventHandler</Type>
+</Property>
+
+<Property name="markerTitleProperty">
+<Description>
+Name of property in data source that provides the title of a marker (used for tooltip text).</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="polygonTitleProperty">
+<Description>
+Name of property in data source that provides the title of a polygon (used for tooltip text).</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="markerDataProperties">
+<Description>
+List of properties in data source that provides data to be stored within the current marker. This data is visible from onclick event handler.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="polygonDataProperties">
+<Description>
+List of properties in data source that provides data to be stored within the current polygon. This data is visible from onclick event handler.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="ondrilldown">
+<Description>
+ondrilldown event handler: if defined, this event is fired from drillDown() method.</Description>
+<Type>%ZEN.Datatype.eventHandler</Type>
+</Property>
+
+<Property name="ondrillup">
+<Description>
+ondrillup event handler: if defined, this event is fired from drillUp() method.</Description>
+<Type>%ZEN.Datatype.eventHandler</Type>
+</Property>
+
+<Property name="fillOpacityProperty">
+<Description>
+Name of property in data source that provides polygon fill opacity.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="isClickableProperty">
+<Description>
+Name of property in data source that provides "сlickable" attribute value for markers and polygons.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="hoverOpacity">
+<Description>
+Hover opacity for clickable polygons.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="strokeOpacity">
+<Description>
+Polygon stroke opacity.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="strokeWeight">
+<Description>
+Polygon stroke weight.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="fillOpacity">
+<Description>
+Default fillOpacity for polygons.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="markerIconProperty">
+<Description>
+Name of property in data source that provides icon href for markers.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="markerIcon">
+<Description>
+Default marker icon href.</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="markerSpecialIcon">
+<Description>
+Special marker icon href.                                                                     [+]</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="markerSpecialProperty">
+<Description>
+Special marker property                                                                       [+]</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="markerIconSize">
+<Description>
+Marker icon size (ignored if both markerIcon and markerIconProperty are not set).</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="additionalInfo">
+<Description>
+Additional text information after polygon/marker title in brackets                            [+]</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="additionalInfoProperty">
+<Description>
+Additional value information after polygon/marker title in brackets                           [+]</Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="onapplyfilters">
+<Description>
+onapplyfilters event handler</Description>
+<Type>%ZEN.Datatype.eventHandler</Type>
+</Property>
+
+<Property name="onaddpolygon">
+<Description>
+onaddpolygon event handler</Description>
+<Type>%ZEN.Datatype.eventHandler</Type>
+</Property>
+
+<Property name="onaddmarker">
+<Description>
+onaddmarker event handler</Description>
+<Type>%ZEN.Datatype.eventHandler</Type>
+</Property>
+
+<Property name="coordsJsFile">
+<Description><![CDATA[
+JS file containing "function loadCoordinates(polygonCoordsArray) {}" that populates a polygon coordinates associative array.
+If <var>coordsJsFile</var> is specified then <var>coordsProperty</var> must contain name of the property that provides keys for the coordinates associative array.]]></Description>
+<Type>%ZEN.Datatype.string</Type>
+</Property>
+
+<Property name="drillUpButtonPosition">
+<Description><![CDATA[
+Where "<< Back" button is located]]></Description>
+<Type>%ZEN.Datatype.string</Type>
+<InitialExpression>"top"</InitialExpression>
+<Parameter name="VALUELIST" value="top,bottom"/>
+</Property>
+
+<Method name="%OnGetPortletName">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	quit "Ukraine Extended Map"
+]]></Implementation>
+</Method>
+
+<Method name="%OnGetPortletIcon">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	quit "deepsee/world_48.gif"
+]]></Implementation>
+</Method>
+
+<Method name="%OnGetPortletSettings">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>*pInfo:%List</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	kill pInfo
+	// $LB(name,value,type,caption,title)
+
+	set tTypeList = "ENUM^"_$$$Text("Roadmap","%DeepSee")_":ROADMAP,"_
+			$$$Text("Satellite","%DeepSee")_":SATELLITE,"_
+			$$$Text("Hybrid","%DeepSee")_":HYBRID,"_
+			$$$Text("Terrain","%DeepSee")_":TERRAIN"
+
+	set pInfo($I(pInfo)) = $LB("mapType","",tTypeList,$$$Text("Map Type","%DeepSee"),$$$Text("Initial display type for the map","%DeepSee"))
+	set pInfo($I(pInfo)) = $LB("zoom",12,"%Integer",$$$Text("Zoom","%DeepSee"),$$$Text("Initial zoom level for the map","%DeepSee"))
+	set pInfo($I(pInfo)) = $LB("latitude",55.74,"%Number",$$$Text("Starting latitude","%DeepSee"),$$$Text("Initial latitude for the map","%DeepSee"))
+	set pInfo($I(pInfo)) = $LB("longitude",37.6,"%Number",$$$Text("Starting longitude","%DeepSee"),$$$Text("Initial longitude for the map","%DeepSee"))
+
+	set pInfo($I(pInfo)) = $LB("onclickmarker","","%ZEN.Datatype.eventHandler","'onclickmarker' event handler","User callback for onclickmarker event")
+	set pInfo($I(pInfo)) = $LB("markersdraggable",1,"%Boolean","Draggable markers?","Toggle markers drag'n'drop.")
+
+	set pInfo($I(pInfo)) = $LB("latitudeProperty","","%ZEN.Datatype.string","Latitude property","Latitude property for markers")
+	set pInfo($I(pInfo)) = $LB("longitudeProperty","","%ZEN.Datatype.string","Longitude property","Longitude property for markers")
+	set pInfo($I(pInfo)) = $LB("markerTitleProperty","","%ZEN.Datatype.string","Marker title property","Title property for markers")
+	set pInfo($I(pInfo)) = $LB("markerDataProperties","","%ZEN.Datatype.string","Marker data properties","List of data properties for markers")
+	set pInfo($I(pInfo)) = $LB("markerIconProperty","","%ZEN.Datatype.string","Marker icon property","Marker icon property")
+	set pInfo($I(pInfo)) = $LB("markerIcon","","%ZEN.Datatype.string","Marker icon","Default marker icon")
+	set pInfo($I(pInfo)) = $LB("markerSpecialIcon","","%ZEN.Datatype.string","Marker special icon","Marker icon for special place")
+	set pInfo($I(pInfo)) = $LB("markerSpecialProperty","","%ZEN.Datatype.string","Marker special property","Marker special property for special icon")
+	set pInfo($I(pInfo)) = $LB("markerIconSize","","%ZEN.Datatype.string","Marker icon size","Default marker icon size (ingored if Marker icon is not set)")
+	
+	set pInfo($I(pInfo)) = $LB("additionalInfo","","%ZEN.Datatype.string","Additional Info","Additional text information after polygon/marker title in brackets")
+	set pInfo($I(pInfo)) = $LB("additionalInfoProperty","","%ZEN.Datatype.string","Additional Info Property","Additional value information after polygon/marker title in brackets")
+	
+	
+	set pInfo($I(pInfo)) = $LB("coordsJsFile","","%ZEN.Datatype.string","JS file with coords","JS file with javascript 'function loadCoordinates(polygonCoordsArray) {...}' that populates polygonCoordsArray argument with polygon coordinates keyed by values from the data source property specified in 'Polygon coords property' setting.")
+	set pInfo($I(pInfo)) = $LB("coordsProperty","","%ZEN.Datatype.string","Polygon coords property","Data source property that provides coordinates for polygons if 'JS file with coords' is not specified. Otherwise this setting should contain name of data source property that provides keys for associative array which is populated by javascript code in 'JS file with coords'.")
+	
+	set pInfo($I(pInfo)) = $LB("onclickpolygon","","%ZEN.Datatype.eventHandler","'onclickpolygon' event handler","User callback for onclickpolygon event")	
+	
+	set pInfo($I(pInfo)) = $LB("colorProperty","","%ZEN.Datatype.string","Polygon сolor property","Color property for polygons")
+	set pInfo($I(pInfo)) = $LB("polygonTitleProperty","","%ZEN.Datatype.string","Polygon title property","Title property for polygons")
+	set pInfo($I(pInfo)) = $LB("polygonDataProperties","","%ZEN.Datatype.string","Polygon data properties","List of data properties for polygons")
+	set pInfo($I(pInfo)) = $LB("fillOpacityProperty","","%ZEN.Datatype.string","Fill opacity property","Fill opacity property for polygons")
+	set pInfo($I(pInfo)) = $LB("isClickableProperty","","%ZEN.Datatype.string","IsClickable flag property","IsClickable flag property for polygons")
+	
+	set pInfo($I(pInfo)) = $LB("fillOpacity","","%ZEN.Datatype.string","Fill opacity","Default fill opacity for polygons")
+	set pInfo($I(pInfo)) = $LB("hoverOpacity","","%ZEN.Datatype.string","Hover opacity","Hover opacity for clickable polygons")
+	set pInfo($I(pInfo)) = $LB("strokeOpacity","","%ZEN.Datatype.string","Stroke opacity","Stroke opacity for polygons")
+	set pInfo($I(pInfo)) = $LB("strokeWeight","","%ZEN.Datatype.string","Stroke weight","Stroke weight for polygons")
+	
+	set pInfo($I(pInfo)) = $LB("drillUpButtonPosition","top","ENUM^top,bottom","Drill-up button position","Where ""<< Back"" button is located")
+		
+	set pInfo($I(pInfo)) = $LB("ondrilldown","","%ZEN.Datatype.eventHandler","'ondrilldown' event handler","User callback for ondrilldown event")
+	set pInfo($I(pInfo)) = $LB("ondrillup","","%ZEN.Datatype.eventHandler","'ondrillup' event handler","User callback for ondrillup event")
+	
+	set pInfo($I(pInfo)) = $LB("onapplyfilters","","%ZEN.Datatype.eventHandler","'onapplyfilters' event handler","User callback for onapplyfilters event")
+	set pInfo($I(pInfo)) = $LB("onaddpolygon","","%ZEN.Datatype.eventHandler","'onaddpolygon' event handler","User callback for onaddpolygon event")
+	set pInfo($I(pInfo)) = $LB("onaddmarker","","%ZEN.Datatype.eventHandler","'onaddmarker' event handler","User callback for onaddmarker event")
+
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="renderContents">
+<Description>
+Client-side method to render control.</Description>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	this._mapObject = null;
+	var mapDiv = this.getEnclosingDiv();
+
+	// test if we have not been rendered yet
+	if (mapDiv == null) return;
+
+	// make sure our div has some area
+	var width = isNaN(parseFloat(this.width)) ? 200 : parseFloat(this.width);
+	var height = isNaN(parseFloat(this.height)) ? 200 : parseFloat(this.height);
+	if ('' == this.enclosingStyle) {
+		mapDiv.style.width = width + 'px';
+		mapDiv.style.height = height + 'px';
+	}
+
+	// get data from controller, if present.
+	this.acquireData();
+
+	// create map
+	this.initMap(mapDiv);
+
+	// add markers
+	this.syncMarkers();
+	
+	// add polygons
+	this.syncPolygons();
+	
+	zenPage.dashboardEventHandler('', '', '', 'refresh', '*', '');
+]]></Implementation>
+</Method>
+
+<Method name="initMap">
+<Description>
+Initialize the map</Description>
+<FormalSpec>mapDiv</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	if (('undefined' == typeof google)||('undefined' == typeof google.maps)) {
+		mapDiv.innerHTML = $$$Text('Unable to load google map api.');
+		return;
+	}
+
+	var mapTypeId = this.getMapTypeId(this.mapType);
+	
+	this.latitude = parseFloat(this.latitude);
+	if (isNaN(this.latitude)) this.latitude = 42.36;
+	
+	this.longitude = parseFloat(this.longitude);
+	if (isNaN(this.longitude)) this.longitude = 288.92;
+	
+	var mapLatlng = new google.maps.LatLng(this.latitude, this.longitude);
+	
+	this.zoom = parseInt(this.zoom, 10);
+	if (isNaN(this.zoom)) this.zoom = 0;
+	
+	var mapOptions = {
+		zoom: this.zoom,
+		center: mapLatlng,
+		mapTypeId: mapTypeId
+	}
+	var map = new google.maps.Map(mapDiv, mapOptions);
+	this._mapObject = map;
+	
+	// array of markers
+	this._markers = [];
+	
+	// array of polygons
+	this._polygons = [];
+	
+	// drilldown arrays
+	this._prevZoom = [];
+	this._prevCenter = [];
+	this._drillDownTitle = [];
+
+	// add listeners
+	var code = new Function('zenPage.getComponent('+this.index+').zoomChangedHandler();');
+	google.maps.event.addListener(map, 'zoom_changed', code);
+
+	var code = new Function('zenPage.getComponent('+this.index+').dragendHandler();');
+	google.maps.event.addListener(map, 'dragend', code);
+	
+	var code = new Function('zenPage.getComponent('+this.index+').centerChangedHandler();');
+	google.maps.event.addListener(map, 'center_changed', code);
+]]></Implementation>
+</Method>
+
+<Method name="zoomChangedHandler">
+<Description>
+Callback for zoom-changed event.</Description>
+<Internal>1</Internal>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var map = this.getMapObject();
+	if (map) {
+		this.zoom = map.getZoom();
+	}
+]]></Implementation>
+</Method>
+
+<Method name="dragendHandler">
+<Description>
+Callback for map dragend event.</Description>
+<Internal>1</Internal>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var map = this.getMapObject();
+	if (map) {
+		var latLng = map.getCenter();
+		this.latitude = latLng.lat();
+		this.longitude = latLng.lng();
+	}
+]]></Implementation>
+</Method>
+
+<Method name="getMapObject">
+<Description>
+Return the google map API object used by the map view.</Description>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[	return this._mapObject;
+]]></Implementation>
+</Method>
+
+<Method name="getMapTypeId">
+<Description>
+Given the name of a map type, convert to a map type id.</Description>
+<FormalSpec>type</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	if (('undefined' == typeof google)||('undefined' == typeof google.maps)) {
+		return '';
+	}
+
+	var mapType = google.maps.MapTypeId.ROADMAP;
+	switch (type) {
+	case 'HYBRID':
+		mapType = google.maps.MapTypeId.HYBRID;
+		break;
+	case 'SATELLITE':
+		mapType = google.maps.MapTypeId.SATELLITE;
+		break;
+	case 'TERRAIN':
+		mapType = google.maps.MapTypeId.TERRAIN;
+		break;
+	case 'ROADMAP':
+	default:
+		break;
+	}
+
+	return mapType;
+]]></Implementation>
+</Method>
+
+<Method name="setProperty">
+<Description>
+Set the value of a named property.</Description>
+<FormalSpec>property,value,value2</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var map = this.getMapObject();
+
+	switch(property) {
+	case 'latitude':
+	case 'longitude':
+		this[property] = value;
+		if (map) {
+			var mapLatlng = new google.maps.LatLng(parseFloat(this.latitude), parseFloat(this.longitude));
+			map.panTo(mapLatlng);
+		}
+		break;
+
+	case 'zoom':
+		this[property] = value;
+		if (map) {
+			map.setZoom(parseInt(this.zoom,10));
+		}
+		break;
+
+	case 'mapType':
+		this[property] = value;
+		if (map) {
+			var mapTypeId = this.getMapTypeId(this.mapType);
+			map.setMapTypeId(mapTypeId);
+		}
+		break;
+
+	default:
+		return this.invokeSuper('setProperty',arguments);
+	}
+	return true;
+]]></Implementation>
+</Method>
+
+<Method name="notifyViewHandler">
+<Description>
+Notification that the dataController associated with this dataView has raised an event.</Description>
+<FormalSpec>reason,data1,data2,data3</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	switch(reason) {
+	case 'dataChange':
+		this.onApplyFilters(true);
+	case 'modelChange':
+		// some change in dataController
+		this.acquireData();
+		this.syncMarkers();
+		this.syncPolygons();
+		break;
+	case 'seriesChange':
+		break;
+	}
+]]></Implementation>
+</Method>
+
+<Method name="addMarker">
+<Description><![CDATA[
+Add a marker to the map at given coordinates.<br/>
+<var>id</var> is a user-defined identifier associated with the marker.<br/>
+Returns the marker object.]]></Description>
+<FormalSpec>id,latitude,longitude,title,isClickable,icon,data</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+			   
+	var marker = null;
+	var map = this.getMapObject();
+	if (map && !isNaN(parseFloat(latitude)) && !isNaN(parseFloat(longitude))) {
+		var mapLatlng = new google.maps.LatLng(parseFloat(latitude), parseFloat(longitude));
+		marker = new google.maps.Marker({
+			position: mapLatlng,
+			map: map,
+			draggable: this.markersDraggable,
+			title:title,
+			clickable: (isClickable == 1),
+			icon: (icon ? (this.markerIconSize ? new google.maps.MarkerImage(icon, null, null, null, new google.maps.Size(this.markerIconSize, this.markerIconSize)) : icon) : null),
+			data: data});
+
+		// add to list
+		marker._id = id;
+		var index = this._markers.length;
+		this._markers[index] = marker;
+
+		// add event handler(s)
+		if (this.markersDraggable) {
+			var code = new Function('zenPage.getComponent('+this.index+').markerDragEndHandler("'+index+'");');
+			google.maps.event.addListener(marker, 'dragend', code);
+		}
+
+		var code = new Function('zenPage.getComponent('+this.index+').markerClickHandler("'+index+'");');
+		google.maps.event.addListener(marker, 'click', code);
+	}
+	
+	return marker;
+]]></Implementation>
+</Method>
+
+<Method name="addPolygon">
+<Description><![CDATA[
+Add a polygon to the map at given coordinates.<br/>
+<var>id</var> is a user-defined identifier associated with the polygon.<br/>
+Returns the polygon object.]]></Description>
+<FormalSpec>id,coords,color,fo,isClickable,title,data</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var polygon = null;
+	var map = this.getMapObject();
+	if (map) 
+	{
+		if (color.substring(0, 4) === "rgb(" && color.indexOf(")") == (color.length - 1) && color.indexOf(".") > -1)
+		{
+			var colorAr = color.substring(4, color.length - 1).split(",");
+			color = "rgb(" + String(parseFloat(colorAr[0])).split(".")[0] + "," + String(parseFloat(colorAr[1])).split(".")[0] + "," + String(parseFloat(colorAr[2])).split(".")[0] + ")";
+		}
+		
+		polygon = new google.maps.Polygon({
+			tooltip: '',
+			title: title,
+			fillColor: (color.substring(0, "hsv2rgb".length) === "hsv2rgb" ? eval(color) : color),
+			fillOpacity: fo,
+			clickable: (isClickable == 1),
+			strokeColor: (color.substring(0, "hsv2rgb".length) === "hsv2rgb" ? eval(color) : color),
+			strokeOpacity: (this.strokeOpacity ? this.strokeOpacity : 0.5),
+			strokeWeight: (this.strokeWeight ? this.strokeWeight : 3),
+			paths: coords,
+			map: map,
+			data: data,
+			defaultFO: fo});
+			
+		// add to list
+		polygon._id = id;
+		var index = this._polygons.length;
+		this._polygons[index] = polygon;
+
+		var code = new Function('event', 'zenPage.getComponent('+this.index+').polygonClickHandler("'+index+'", event);');
+		google.maps.event.addListener(polygon, 'click', code);
+
+		code = new Function('event', 'zenPage.getComponent('+this.index+').polygonMouseOver("'+index+'", event);');
+		google.maps.event.addListener(polygon, 'mouseover', code);
+		
+		code = new Function('event', 'zenPage.getComponent('+this.index+').polygonMouseMove("'+index+'", event);');
+		google.maps.event.addListener(polygon, 'mousemove', code);
+
+		code = new Function('event', 'zenPage.getComponent('+this.index+').polygonMouseOut("'+index+'", event);');
+		google.maps.event.addListener(polygon, 'mouseout', code);
+	}
+	return polygon;
+]]></Implementation>
+</Method>
+
+<Method name="polygonMouseOver">
+<Internal>1</Internal>
+<FormalSpec>index,event</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var map = this.getMapObject();
+	if (map) {
+		var polygon = this.getPolygon(index);
+		if (polygon && polygon.clickable) polygon.setOptions({fillOpacity: (this.hoverOpacity ? this.hoverOpacity : 0.35)});
+	}
+]]></Implementation>
+</Method>
+
+<Method name="polygonMouseMove">
+<Internal>1</Internal>
+<FormalSpec>index,event</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var map = this.getMapObject();
+	if (map) {
+		var polygon = this.getPolygon(index);
+		if (polygon && polygon.tooltip) 
+		{
+			clearTimeout(polygon.tooltipTimer);
+			polygon.tooltipTimer = setTimeout('zenPage.getComponent('+this.index+').polygonTooltipTimer('+index+',' + event.latLng.lat() + ',' + event.latLng.lng() + ');', 150);
+		}
+	}
+]]></Implementation>
+</Method>
+
+<Method name="polygonTooltipTimer">
+<Internal>1</Internal>
+<FormalSpec>index,lat,lng</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var map = this.getMapObject();
+	if (map) {
+		var polygon = this.getPolygon(index);
+		if (polygon && polygon.tooltip) polygon.tooltip.show(new google.maps.LatLng(lat, lng));
+	}
+]]></Implementation>
+</Method>
+
+<Method name="polygonMouseOut">
+<Internal>1</Internal>
+<FormalSpec>index,event</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var map = this.getMapObject();
+	if (map) {
+		var polygon = this.getPolygon(index);
+		if (polygon) 
+		{
+			if (polygon.clickable) polygon.setOptions({fillOpacity: polygon.defaultFO});
+			
+			if (polygon.tooltip)
+			{
+				polygon.tooltip.hide();
+				clearTimeout(polygon.tooltipTimer);
+			}
+		}
+	}
+]]></Implementation>
+</Method>
+
+<Method name="polygonClickHandler">
+<Internal>1</Internal>
+<FormalSpec>index,event</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var map = this.getMapObject();
+	if (map) {
+		var polygon = this.getPolygon(index);
+		if (polygon) {
+			if (polygon.tooltip)
+			{				
+				polygon.tooltip.hide();
+				clearTimeout(polygon.tooltipTimer);
+			}
+			zenInvokeCallbackMethod(this.onclickpolygon,this,'onclickpolygon','polygon',polygon,'position',event.latLng);
+		}
+	}
+]]></Implementation>
+</Method>
+
+<Method name="getMarker">
+<Description>
+Find marker in marker list by index # (0-based).</Description>
+<Internal>1</Internal>
+<FormalSpec>index</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[	return this._markers ? this._markers[index] : null;
+]]></Implementation>
+</Method>
+
+<Method name="getPolygon">
+<Description>
+Find polygon in polygon list by index # (0-based).</Description>
+<Internal>1</Internal>
+<FormalSpec>index</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[	return this._polygons ? this._polygons[index] : null;
+]]></Implementation>
+</Method>
+
+<Method name="markerDragEndHandler">
+<Description>
+Callback for marker dragend event.</Description>
+<Internal>1</Internal>
+<FormalSpec>index</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var map = this.getMapObject();
+	if (map) {
+		var marker = this.getMarker(index);
+		if (marker) {
+			this.createInfoWindow(marker,'Marker moved to:<br/>' + marker.getPosition());
+		}
+	}
+]]></Implementation>
+</Method>
+
+<Method name="markerClickHandler">
+<Description>
+Callback for marker click event.</Description>
+<Internal>1</Internal>
+<FormalSpec>index</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var map = this.getMapObject();
+	if (map) {
+		var marker = this.getMarker(index);
+		if (marker) {
+			
+			zenInvokeCallbackMethod(this.onclickmarker,this,'onclickmarker','marker',marker);
+		}
+	}
+]]></Implementation>
+</Method>
+
+<Method name="createInfoWindow">
+<Description>
+Create and show an info window for a given marker.</Description>
+<Internal>1</Internal>
+<FormalSpec>marker,content</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var map = this.getMapObject();
+	if (map && marker) {
+		var infoWindow = new google.maps.InfoWindow({content: content});
+		infoWindow.open(map,marker);
+		return infoWindow;
+	}
+	else
+	{
+		return null;
+	}
+]]></Implementation>
+</Method>
+
+<Method name="createInfoWindowAtPosition">
+<Description>
+Create and show an info window at the specified position.</Description>
+<FormalSpec>position,content</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var map = this.getMapObject();
+	if (map && position) {
+		var infoWindow = new google.maps.InfoWindow({content: content});
+		infoWindow.position = position;
+		infoWindow.open(map);
+		return infoWindow;
+	}
+	else
+	{
+		return null;
+	}
+]]></Implementation>
+</Method>
+
+<Method name="removeMarker">
+<Description><![CDATA[
+Remove a marker from the map.
+<var>marker</var> is the marker to remove.]]></Description>
+<FormalSpec>marker</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	try {
+		marker.setMap(null);
+	}
+	catch(ex) {
+		// swallow google error!
+	}
+]]></Implementation>
+</Method>
+
+<Method name="removePolygon">
+<Description><![CDATA[
+Remove a polygon from the map.
+<var>polygon</var> is the polygon to remove.]]></Description>
+<FormalSpec>polygon</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	try {
+		if (polygon.tooltip) polygon.tooltip.setMap(null);
+		polygon.setMap(null);
+	}
+	catch(ex) {
+		// swallow google error!
+	}
+]]></Implementation>
+</Method>
+
+<Method name="acquireData">
+<Description>
+Internal method: acquire data for this view and store a copy in a local cache.</Description>
+<Internal>1</Internal>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var controller = this.getController();
+	if (null == controller) {
+		// try to connect to dataController
+		this.connectToController();
+		controller = this.getController();
+	}
+
+	// array of marker data
+	this._markerData = [];
+	
+	if (controller && (this.latitudeProperty != '') && (this.longitudeProperty != ''))
+	{
+		// get data from controller (make sure data is loaded)
+		var dims = controller.getDimensions();
+		
+		// are we connected to a pivot table?
+		var invert = controller.getSelectedRange;
+		if (!invert) {
+			var seriesSize = controller.getDimSize(1);
+			var seriesCount = controller.getDimSize(2);
+			var labelDim = 2;
+			var titleCol = -1;
+			var latCol = -1;
+			var longCol = -1;
+			var clickableCol = -1;
+			var miCol = -1;
+			var addInfoCol = -1;
+			var specIconCol = -1;
+		}
+		else {
+			var seriesSize = controller.getDimSize(2);
+			var seriesCount = controller.getDimSize(1);
+			var labelDim = 1;
+		}
+		
+		if (seriesCount > 0)
+		{
+			// find long and lat and title columns
+			if (!invert)
+				for (var p = 0; p < seriesSize; p++) 
+				{
+					var pname = controller.getPropertyName(p);
+					if (pname == this.latitudeProperty) {
+						latCol = p;
+					}
+					if (pname == this.longitudeProperty) {
+						longCol = p;
+					}
+					if (pname == this.markerTitleProperty) {
+						titleCol = p;
+					}
+					if (pname == this.isClickableProperty) {
+						clickableCol = p;
+					}
+					if (pname == this.markerIconProperty) {
+						miCol = p;
+					}
+					if (pname == this.additionalInfoProperty) {
+						addInfoCol = p;
+					}
+					if (pname == this.markerSpecialProperty) {
+						specIconCol = p;
+					}
+				}
+		
+			
+			// each series corresponds to a marker
+			if (invert || (latCol >= 0 && longCol >= 0))
+				for (var n = 0; n < seriesCount; n++) 
+				{
+					var isClickable = 1;
+					var mi = null;
+					var specIcon = 0;
+					var addInfo = 0;
+					var sname = controller.getLabel(n,labelDim);
+
+					if (!invert) {
+						var lat = controller.getData(latCol,n);
+						var long = controller.getData(longCol,n);
+						if (titleCol >= 0) sname = controller.getData(titleCol,n);
+						if (clickableCol >= 0) isClickable = controller.getData(clickableCol,n);
+						if (miCol >= 0) mi = controller.getData(miCol,n);
+						if (specIconCol >= 0) specIcon = controller.getData(specIconCol,n);
+						if (addInfoCol >= 0) addInfo = controller.getData(addInfoCol,n);
+					}
+					else {
+						var lat = controller.getDataByName(this.latitudeProperty,n);
+						var long = controller.getDataByName(this.longitudeProperty,n);
+						if (this.markerTitleProperty != '') sname = controller.getDataByName(this.markerTitleProperty,n);
+						if (this.isClickableProperty != '') isClickable = controller.getDataByName(this.isClickableProperty,n);
+						if (this.markerIconProperty != '') mi = controller.getDataByName(this.markerIconProperty,n);
+						if (this.markerSpecialProperty != '') specIcon = controller.getDataByName(this.markerSpecialProperty,n);
+						if (this.additionalInfoProperty != '') addInfo = controller.getDataByName(this.additionalInfoProperty,n);
+					}
+			
+					if (!isNaN(parseFloat(lat)) && !isNaN(parseFloat(long))) {
+						var data = [];
+						if (this.markerDataProperties != '')
+						{
+							var props = this.markerDataProperties.split(",");
+							for (var i = 0; i < props.length; i++) {
+							    data[props[i]] = controller.getDataByName(props[i],n);
+							}
+						}
+						
+						if (!mi) mi = this.markerIcon;
+					
+						this._markerData[this._markerData.length] = {
+							title: sname,
+							latitude: lat,
+							longitude: long,
+							isClickable: (!isClickable ? 1 : isClickable),
+							icon: mi,
+							specialIcon: specIcon,
+							additionalInfoValue: addInfo,
+							data: data
+						};
+					}
+				}
+		}
+	}
+	
+	// array of polygon data
+	this._polygonData = [];
+	
+	if (this.coordsJsFile && !this._polygonCoords)
+	{
+		this._polygonCoords = [];
+		loadCoordinates(this._polygonCoords);
+	}
+	
+	if (controller && (this.coordsProperty != '')) 
+	{
+		// get data from controller (make sure data is loaded)
+		var dims = controller.getDimensions();
+		
+		// are we connected to a pivot table?
+		var invert = controller.getSelectedRange;
+		if (!invert) {
+			var seriesSize = controller.getDimSize(1);
+			var seriesCount = controller.getDimSize(2);
+			var labelDim = 2;
+			var titleCol = -1;
+			var coordsCol = -1;
+			var colorCol = -1;
+			var foCol = -1;
+			var clickableCol = -1;
+			var addInfoCol = -1;
+		}
+		else {
+			var seriesSize = controller.getDimSize(2);
+			var seriesCount = controller.getDimSize(1);
+			var labelDim = 1;
+		}
+
+		if (seriesCount > 0)
+		{
+			// find coords and color columns
+			if (!invert)
+				for (var p = 0; p < seriesSize; p++) 
+				{
+					var pname = controller.getPropertyName(p);
+						
+					if (pname == this.coordsProperty) {
+						coordsCol = p;
+					}
+					if (pname == this.colorProperty) {
+						colorCol = p;
+					}
+					if (pname == this.fillOpacityProperty) {
+						foCol = p;
+					}
+					if (pname == this.isClickableProperty) {
+						clickableCol = p;
+					}					
+					if (pname == this.polygonTitleProperty) {
+						titleCol = p;
+					}
+					
+					if (pname == this.additionalInfoProperty) {
+						addInfoCol = p;
+					}
+				}
+			
+			// each series corresponds to a poly
+			for (var n = 0; n < seriesCount; n++)
+			{
+				var color = 'purple';
+				var fo = this.fillOpacity;  // default opacity
+				var isClickable = 1;
+				var addInfo = 0;
+				var sname = controller.getLabel(n,labelDim);
+
+				if (!invert) {
+					if (coordsCol<0) break;
+					var coords = controller.getData(coordsCol,n);
+					if (colorCol >= 0) color = controller.getData(colorCol,n);
+					if (foCol >= 0) fo = controller.getData(foCol,n);
+					if (clickableCol >= 0) isClickable = controller.getData(clickableCol,n);
+					if (titleCol >= 0) sname = controller.getData(titleCol,n);
+					if (addInfoCol >= 0) addInfo = controller.getData(addInfoCol,n);
+				}
+				else {
+					var coords = controller.getDataByName(this.coordsProperty,n);
+					if (this.colorProperty != '') color = controller.getDataByName(this.colorProperty,n);
+					if (this.fillOpacityProperty != '') fo = controller.getDataByName(this.fillOpacityProperty,n);
+					if (this.isClickableProperty != '') isClickable = controller.getDataByName(this.isClickableProperty,n);
+					if (this.polygonTitleProperty != '') sname = controller.getDataByName(this.polygonTitleProperty,n);
+					if (this.additionalInfoProperty != '') addInfo = controller.getDataByName(this.additionalInfoProperty,n);
+				}
+				
+				if (!fo) fo = this.fillOpacity;  // default opacity
+
+				if (this.coordsJsFile) coords = this._polygonCoords[coords];
+				
+				if (!coords) continue;
+				
+				var pathsSets = coords.split(";");
+				for (var j = 0; j < pathsSets.length; j++) {
+					var paths = pathsSets[j].split(" ");
+					for (var i = 0; i < paths.length; i++) {
+						var p = paths[i].split(",")
+					    paths[i] = new google.maps.LatLng(p[1], p[0], p[2]);
+					}
+					pathsSets[j] = paths;
+				}
+			
+				var data = [];
+			
+				if (this.polygonDataProperties != '')
+				{
+					var props = this.polygonDataProperties.split(",");
+					for (var i = 0; i < props.length; i++) {
+					    data[props[i]] = controller.getDataByName(props[i],n);
+					}
+				}
+				
+				this._polygonData[this._polygonData.length] = {
+					title: sname,
+					coords: pathsSets,
+					color: (!color ? 'purple' : color),
+					fo: (!fo ? 0.1 : fo),
+					isClickable: (!isClickable ? 1 : isClickable),
+					additionalInfoValue: addInfo,
+					data: data
+				};
+
+			}
+		}
+	}
+]]></Implementation>
+</Method>
+
+<Method name="syncMarkers">
+<Description>
+Internal method: sync markers to data from controller.</Description>
+<Internal>1</Internal>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	try {
+		var controller = this.getController();
+		if (null == controller) {
+			return;
+		}
+	
+		this.clearMarkers();
+
+		if (this._markerData) {
+			for (var n = 0; n < this._markerData.length; n++) {
+				var md = this._markerData[n];
+				if (md) {
+					
+					if(this.markerSpecialIcon != "" && md.specialIcon == 1)
+						md.icon = this.markerSpecialIcon;
+					
+					this.setAdditionalInfo(md);
+					
+					var marker = this.addMarker(n, md.latitude, md.longitude, md.title, md.isClickable, md.icon, md.data);
+					
+					if (marker)
+						zenInvokeCallbackMethod(this.onaddmarker,this,'onaddmarker','marker',marker);
+				}
+			}
+		}
+	}
+	catch(ex) {
+		alert('Error in syncMarkers ' + ex.message);
+	}
+]]></Implementation>
+</Method>
+
+<Method name="syncPolygons">
+<Description>
+Internal method: sync polygons to data from controller.</Description>
+<Internal>1</Internal>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	function TooltipOverlay(map, title)
+	{
+		this.map_ = map; 
+		this.div_ = null;
+		this.title_ = title;
+		this.setMap(map);
+	};
+  	
+	TooltipOverlay.prototype = new google.maps.OverlayView();
+	
+	TooltipOverlay.prototype.onAdd = function()
+	{
+		var div = document.createElement('div');
+		div.appendChild(document.createTextNode(this.title_));
+		div.style.border = 'solid 1px #000000';
+		div.style.color = '#000000';
+		div.style.backgroundColor = '#ffffe1';
+		div.style.whiteSpace = 'nowrap';
+		div.style.font = 'icon';
+		if (navigator.userAgent.indexOf("Safari")>=0 || navigator.userAgent.indexOf("Chrome")>=0)
+		{
+			div.style.fontFamily = "Tahoma,sans-serif";
+			div.style.fontSize = "13px";
+		}
+		div.style.MozBoxShadow = '2px 2px 4px #7f7f7f';
+		div.style.boxShadow = '2px 2px 4px #7f7f7f';
+		div.style.padding = '2px 3px'; 
+		div.style.position = 'absolute';
+		div.style.visibility = "hidden";
+		this.div_ = div;
+		
+		var panes = this.getPanes();
+		panes.floatShadow.appendChild(div);
+	}
+	
+	TooltipOverlay.prototype.onRemove = function() 
+	{
+		if (this.div_) this.div_.parentNode.removeChild(this.div_);
+		this.div_ = null;
+	}
+	
+	TooltipOverlay.prototype.draw = function() {}
+	
+	TooltipOverlay.prototype.hide = function() 
+	{
+		if (this.div_) this.div_.style.visibility = "hidden";
+	}
+
+	TooltipOverlay.prototype.show = function(latLng)
+	{
+		if (this.div_) 
+		{
+			var point = this.getProjection().fromLatLngToDivPixel(latLng)
+			this.div_.style.left = point.x + 'px';
+			this.div_.style.top = (point.y - parseInt(this.div_.offsetHeight)) + 'px';
+			this.div_.style.visibility = "visible";
+		}
+	}
+	
+	var map = this.getMapObject();
+	
+	try {
+		var controller = this.getController();
+		if (null == controller) {
+			return;
+		}
+	
+		this.clearPolygons();
+
+		if (this._polygonData) {
+			for (var n = 0; n < this._polygonData.length; n++) {
+				var md = this._polygonData[n];
+				if (md) {
+					var poly = this.addPolygon(n, md.coords, md.color, md.fo, md.isClickable, md.title, md.data);
+					
+					this.setAdditionalInfo(md);
+					
+					if (poly && map && md.title) poly.tooltip = new TooltipOverlay(map, md.title);
+					
+					if (poly) zenInvokeCallbackMethod(this.onaddpolygon,this,'onaddpolygon','polygon',poly);
+				}
+			}
+		}
+	}
+	catch(ex) {
+		alert('Error in syncPolygons ' + ex.message);
+	}
+]]></Implementation>
+</Method>
+
+<Method name="setAdditionalInfo">
+<Description>
+Add additional info to the title of marker|polygon</Description>
+<Internal>1</Internal>
+<FormalSpec>data</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	if(this.additionalInfo != "")
+		data.title = data.title  + ' (' + ((data.additionalInfoValue) ? data.additionalInfoValue + ' ' + this.additionalInfo + ')' : 'нет данных)');
+]]></Implementation>
+</Method>
+
+<Method name="drillDown">
+<Description>
+Perform a drilldown</Description>
+<Internal>1</Internal>
+<FormalSpec>title,latLng,zoom,data</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+
+	var map = this.getMapObject();
+	
+	if (map)
+	{
+		this._prevZoom.push(map.getZoom());
+		this._prevCenter.push(map.getCenter());
+	
+		map.setZoom(parseInt(zoom));
+		map.setCenter(latLng);
+	
+		if (this._drillDownTitle.length > 0) this._drillDownTitle[this._drillDownTitle.length - 1].hide();
+		
+		this._drillDownTitle.push(this.newDrillDownTitleOverlay(map, 'zenPage.getComponent('+this.index+').drillUp();', title, this.drillUpButtonPosition));
+		this._drillDownTitle[this._drillDownTitle.length - 1].show();
+	
+		zenInvokeCallbackMethod(this.ondrilldown,this,'ondrilldown','data',data);
+	}
+]]></Implementation>
+</Method>
+
+<Method name="newDrillDownTitleOverlay">
+<Internal>1</Internal>
+<FormalSpec>mapRef,clickHandler,text,drillUpButtonPosition</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+ 	function DrillDownTitleOverlay(map, onclickHandler, titleText, drillUpButtonPosition) 
+	{
+		this.map_ = map; 
+		this.div_ = null;
+		this.divTitle_ = null;
+		this.titleText_ = titleText;
+		this.onclickHandler_ = onclickHandler;
+		this.rect_ = null;
+		this.visible_ = false;
+		this.drillUpButtonPosition_ = drillUpButtonPosition;
+		this.setMap(map);
+	};
+
+	DrillDownTitleOverlay.prototype = new google.maps.OverlayView();
+
+	DrillDownTitleOverlay.prototype.onAdd = function() 
+	{
+		this.visible_ = true;
+	}
+
+	DrillDownTitleOverlay.prototype.onRemove = function() 
+	{
+		if (this.div_) this.div_.parentNode.removeChild(this.div_);
+		if (this.divTitle_) this.divTitle_.parentNode.removeChild(this.divTitle_);
+		if (this.rect_) this.rect_.setMap(null);
+		this.div_ = null;
+		this.divTitle_ = null;
+		this.rect_ = null;
+	}
+
+	DrillDownTitleOverlay.prototype.draw = function() 
+	{
+		var overlayProjection = this.getProjection();
+		
+		if (this.div_) this.div_.parentNode.removeChild(this.div_);
+		if (this.divTitle_) this.divTitle_.parentNode.removeChild(this.divTitle_);
+		if (this.rect_) this.rect_.setMap(null);
+
+		var div = document.createElement('div');
+		div.appendChild(document.createTextNode('<<  ' + $$$Text("Back", "Ensemble")));
+		div.style.border = 'solid 1px #000000';
+		div.style.color = '#ffffff';
+		div.style.backgroundColor = '#356B8D';
+		div.style.MozBoxShadow = '2px 2px 4px #7f7f7f';
+		div.style.boxShadow = '2px 2px 4px #7f7f7f';
+		div.style.whiteSpace = 'nowrap';
+		div.style.font = 'icon';
+		if (navigator.userAgent.indexOf("Safari")>=0 || navigator.userAgent.indexOf("Chrome")>=0)
+		{
+			div.style.fontFamily = "Tahoma,sans-serif";
+			div.style.fontSize = "13px";
+		}
+		div.style.padding = '2px 8px'; 
+		div.style.position = 'absolute';
+		div.style.display = 'block';
+		div.style.visibility = (this.visible_ ? "visible" : "hidden");
+		this.div_ = div;
+		var div2 = document.createElement('div');
+		div2.appendChild(document.createTextNode(this.titleText_));
+		div2.style.border = 'solid 1px #000000';
+		div2.style.color = '#000000';
+		if (navigator.userAgent.indexOf("MSIE")>=0)
+		{
+			div2.style.backgroundColor = 'white';
+		}
+		else
+		{
+			div2.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+		}	
+		div2.style.MozBoxShadow = '2px 2px 4px #7f7f7f';
+		div2.style.boxShadow = '2px 2px 4px #7f7f7f';
+		div2.style.whiteSpace = 'nowrap';
+		div2.style.font = 'icon';
+		if (navigator.userAgent.indexOf("Safari")>=0 || navigator.userAgent.indexOf("Chrome")>=0)
+		{
+			div2.style.fontFamily = "Tahoma,sans-serif";
+			div2.style.fontSize = "13px";
+		}
+		div2.style.fontWeight = 'bold';
+		div2.style.padding = '2px 8px'; 
+		div2.style.position = 'absolute';
+		div2.style.display = 'block';
+		div2.style.visibility = (this.visible_ ? "visible" : "hidden");
+		this.divTitle_ = div2;
+
+		var panes = this.getPanes();
+		panes.floatPane.appendChild(this.div_);
+		panes.floatPane.appendChild(this.divTitle_);
+	
+		if (this.drillUpButtonPosition_ == 'bottom')
+		{
+			var x = 12
+			var y = parseInt(this.map_.getDiv().style.height) - 50
+		}
+		else
+		{
+			var x = 70
+			var y = 5
+		}
+		var point = overlayProjection.fromLatLngToDivPixel(overlayProjection.fromContainerPixelToLatLng(new google.maps.Point(x, y)));
+		this.div_.style.left = point.x + 'px';
+		this.div_.style.top = point.y + 'px';
+
+		var sw = overlayProjection.fromDivPixelToLatLng(new google.maps.Point(point.x, point.y + parseInt(this.div_.offsetHeight)));
+		var ne = overlayProjection.fromDivPixelToLatLng(new google.maps.Point(point.x + parseInt(this.div_.offsetWidth), point.y));
+		var rectBounds = new google.maps.LatLngBounds(sw, ne);
+
+		this.rect_ = new google.maps.Rectangle({
+			bounds: rectBounds,
+			clickable: true,
+			fillOpacity: 0,
+			strokeOpacity: 0,
+			map: (this.visible_ ? this.map_ : null)});
+
+		google.maps.event.addListener(this.rect_, 'click', new Function(this.onclickHandler_));
+
+		var point = new google.maps.Point(x + parseInt(this.div_.offsetWidth) - 1, 5);
+		point = overlayProjection.fromLatLngToDivPixel(overlayProjection.fromContainerPixelToLatLng(point));
+		this.divTitle_.style.left = point.x + 'px';
+		this.divTitle_.style.top = this.div_.style.top;
+		
+		this.div_.style.height = (parseInt(this.divTitle_.offsetHeight) - 6) + 'px';
+		this.divTitle_.style.height = (parseInt(this.divTitle_.offsetHeight) - 6) + 'px';
+	}
+
+	DrillDownTitleOverlay.prototype.hide = function() 
+	{
+		if (this.div_) this.div_.style.visibility = "hidden";
+		if (this.divTitle_) this.divTitle_.style.visibility = "hidden";
+		if (this.rect_) this.rect_.setMap(null);
+		
+		this.visible_ = false;
+	}
+
+	DrillDownTitleOverlay.prototype.show = function() 
+	{
+		if (this.div_) this.div_.style.visibility = "visible";
+		if (this.divTitle_) this.divTitle_.style.visibility = "visible";
+		if (this.rect_) this.rect_.setMap(this.map_);
+		
+		this.visible_ = true;
+	}
+	
+	return new DrillDownTitleOverlay(mapRef, clickHandler, text, drillUpButtonPosition);
+]]></Implementation>
+</Method>
+
+<Method name="centerChangedHandler">
+<Internal>1</Internal>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[	if (this._drillDownTitle.length > 0) this._drillDownTitle[this._drillDownTitle.length - 1].draw();
+]]></Implementation>
+</Method>
+
+<Method name="drillUp">
+<Description>
+Restores map parameters (center, zoom and "drilldown title") to their state before drilldown was performed</Description>
+<Internal>1</Internal>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var map = this.getMapObject();
+	
+	if (map)
+	{
+		if (this._drillDownTitle.length > 0)
+		{
+			this._drillDownTitle[this._drillDownTitle.length - 1].hide();
+			this._drillDownTitle[this._drillDownTitle.length - 1].setMap(null);
+			this._drillDownTitle.pop();
+			if (this._drillDownTitle.length > 0) this._drillDownTitle[this._drillDownTitle.length - 1].show();
+		}
+
+		if (this._prevZoom.length > 0)
+		{
+			map.setZoom(this._prevZoom[this._prevZoom.length - 1]);
+			this._prevZoom.pop();
+		}
+		
+		if (this._prevCenter.length > 0)
+		{
+			map.setCenter(this._prevCenter[this._prevCenter.length - 1]);
+			this._prevCenter.pop();
+		}
+	
+		zenInvokeCallbackMethod(this.ondrillup,this,'ondrillup');
+	}
+]]></Implementation>
+</Method>
+
+<Method name="getControl">
+<Description>
+Obtain a reference to a filter (or any other widget control).</Description>
+<FormalSpec>ind</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[  return zenPage.getComponent(this.parent.parent.controlIndices[ind]);
+]]></Implementation>
+</Method>
+
+<Method name="getFilterStateArray">
+<Description>
+Get the array of filter state information for the widget.</Description>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[	return this.parent.parent.getFilterStateArray();
+]]></Implementation>
+</Method>
+
+<Method name="clearMarkers">
+<Description>
+Internal method: clear markers from map.</Description>
+<Internal>1</Internal>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	try {
+		// kill old markers
+		if (this._markers) {
+			for (var n = 0; n < this._markers.length; n++) {
+				this.removeMarker(this._markers[n]);
+			}
+		}
+		this._markers = [];
+	}
+	catch(ex) {
+		alert('Error in clearMarkers ' + ex.message);
+	}
+]]></Implementation>
+</Method>
+
+<Method name="clearPolygons">
+<Description>
+Internal method: clear polygons from map.</Description>
+<Internal>1</Internal>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	try {
+		// kill old polygons
+		if (this._polygons) {
+			for (var n = 0; n < this._polygons.length; n++) {
+				this.removePolygon(this._polygons[n]);
+			}
+		}
+		this._polygons = [];
+	}
+	catch(ex) {
+		alert('Error in clearPolygons ' + ex.message);
+	}
+]]></Implementation>
+</Method>
+
+<Method name="panToAddress">
+<Description>
+Invoke the google geocoder api to lookup an address string and move the map to view it.
+Applications that call this are responsible for adhering to the google geocoder api terms of use.</Description>
+<FormalSpec>address</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	if (('undefined' == typeof google)||('undefined' == typeof google.maps)) {
+		return '';
+	}
+
+	var callback = new Function('results','status','zenPage.getComponent('+this.index+').geocodeAddressHandler(results,status)');
+	var geocoder = new google.maps.Geocoder();
+	geocoder.geocode({ 'address': address}, callback);
+]]></Implementation>
+</Method>
+
+<Method name="geocodeAddressHandler">
+<Description>
+Callback for geocoder API.</Description>
+<Internal>1</Internal>
+<FormalSpec>results,status</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	if (status == google.maps.GeocoderStatus.OK) {
+		var map = this.getMapObject();
+		if (map) {
+			map.setCenter(results[0].geometry.location);
+		}
+	}
+	else {
+		alert("Address not found: " + status);
+	}
+]]></Implementation>
+</Method>
+
+<Method name="%DrawHTML">
+<Implementation><![CDATA[
+	// This causes ZEN to render this component on the client.
+	set ..renderFlag = ..renderFlag + 1
+	
+	// copy ..settings into properties
+	#dim propName As %String = $order(..settings(""))
+	while (propName '= "")
+	{
+		if ("" '= $get(..settings(propName)))
+			try
+			{
+				set $property($this, propName) = ..settings(propName)
+			}
+			catch {}
+
+		set propName = $order(..settings(propName))
+	}
+	
+	&html<<script type="text/javascript">
+	function hsv2rgb(h,s,v) 
+	{
+		// Adapted from http://www.easyrgb.com/math.html
+		// hsv values = 0 - 1, rgb values = 0 - 255
+		var r, g, b;
+		var RGB = new Array();
+		if(s == 0)
+		{
+		  RGB['red']=RGB['green']=RGB['blue']=Math.round(v*255);
+		}
+		else
+		{
+		  var var_h = h * 6;  // h must be < 1
+		  if (var_h == 6) var_h = 0;
+		  var var_i = Math.floor( var_h );
+		  var var_1 = v*(1-s);
+		  var var_2 = v*(1-s*(var_h-var_i));
+		  var var_3 = v*(1-s*(1-(var_h-var_i)));
+		  if (var_i == 0)
+		  {
+		    var_r = v; 
+		    var_g = var_3; 
+		    var_b = var_1;
+		  }
+		  else if (var_i == 1)
+		  {
+		    var_r = var_2;
+		    var_g = v;
+		    var_b = var_1;
+		  }
+		  else if (var_i == 2)
+		  {
+		    var_r = var_1;
+		    var_g = v;
+		    var_b = var_3
+		  }
+		  else if (var_i == 3)
+		  {
+		    var_r = var_1;
+		    var_g = var_2;
+		    var_b = v;
+		  }
+		  else if (var_i == 4)
+		  {
+		    var_r = var_3;
+		    var_g = var_1;
+		    var_b = v;
+		  }
+		  else
+		  {
+		    var_r = v;
+		    var_g = var_1;
+		    var_b = var_2
+		  }
+		  RGB['red'] = Math.round(var_r * 255);
+		  RGB['green'] = Math.round(var_g * 255);
+		  RGB['blue'] = Math.round(var_b * 255);
+		}
+		return '#' + RGB['red'].toString(16) + RGB['green'].toString(16) + RGB['blue'].toString(16);
+	};
+	</script>>
+	
+	if (..coordsJsFile '= "")
+	{
+		&html<<script type='text/javascript' src='#(..coordsJsFile)#'></script>>
+	}
+]]></Implementation>
+</Method>
+
+<Method name="onApplyFilters">
+<Internal>1</Internal>
+<FormalSpec>refresh</FormalSpec>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[	zenInvokeCallbackMethod(this.onapplyfilters,this,'onapplyfilters','refresh',refresh);
+]]></Implementation>
+</Method>
+</Class>
+</Export>
