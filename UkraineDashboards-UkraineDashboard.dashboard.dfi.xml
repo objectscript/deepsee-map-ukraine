@@ -5,18 +5,19 @@
   <widget name="Map" type="portlet" subtype="NPMLBI.UkraineMapPortlet" subtypeClass="" title="" dataSource="NPMLBI/UkraineMapKPI.kpi" dataLink="" drillDownDataSource="" width="200" height="200" sidebarContent="" showSidebar="false" sidebarWidth="" maximized="false" homeRowL="0" homeColL="0" colSpanL="10" rowSpanL="10" showToolbar="true" theme="">
     <control name="" action="applyFilter" target="" targetProperty="LevelFilter" location="widget" type="hidden" controlClass="" label="Родитель" title="" value="" text="" readOnly="false" valueList="" displayList="" activeWhen=""></control>
     <control name="" action="applyFilter" target="" targetProperty="LevelStart" location="widget" type="dropdown" controlClass="" label="Начальный уровень" title="" value="0" text="" readOnly="false" valueList="0,1" displayList="Регионы Украины,Области Украины" activeWhen=""></control>
+    <control name="" action="applyFilter" target="" targetProperty="ParameterName" location="widget" type="dropdown" controlClass="" label="Параметр" title="" value="Параметр 1" text="" readOnly="false" valueList="" displayList="" activeWhen=""></control>
     <property name="additionalInfo">тыс. чел.</property>
     <property name="additionalInfoProperty">TotalValue</property>
     <property name="colorProperty">Color</property>
     <property name="coordsJsFile">polygonsUKR.js</property>
     <property name="coordsProperty">Name</property>
-    <property name="fillOpacity">0.4</property>
-    <property name="hoverOpacity">0.2</property>
+    <property name="fillOpacity">0.6</property>
+    <property name="hoverOpacity">0.4</property>
     <property name="latitude">48.7</property>
     <property name="latitudeProperty">Latitude</property>
     <property name="longitude">32.28</property>
     <property name="longitudeProperty">Longitude</property>
-    <property name="markerDataProperties">Name,Level,DefaultZoom,Address,CanDrillDown,TotalValue,SpecialIcon</property>
+    <property name="markerDataProperties">Name,Level,DefaultZoom,Address,CanDrillDown,TotalValue,TotalPlannedValue,SpecialIcon,ParameterName</property>
     <property name="markerIcon">http://i.imgur.com/pBB7MYT.png</property>
     <property name="markerIconProperty"></property>
     <property name="markerSpecialIcon">http://i.imgur.com/bFJRQfv.png</property>
@@ -33,8 +34,7 @@
     		if (zenThis.win) 
     			zenThis.win.close(); 
     		
-    		zenThis.win = zenThis.createInfoWindow(marker, '<div style="font-size: 12px;"><b>' + marker.data.Name + '</b><br/><br/>Населення (тыс. чел.): ' + marker.data.TotalValue + '</div>');
-    	}
+    		zenThis.win = zenThis.createInfoWindow(marker, '<div style="font-size: 12px;"><b>' + marker.data.Name + '</b><br/><br/>Фактическое значение: ' + marker.data.TotalValue + '</b><br/><br/>Плановое значение: ' + marker.data.TotalPlannedValue + '</div>');    	}
     
     ]]></property>
     <property name="onclickpolygon">
@@ -82,7 +82,7 @@
 			zenThis.currentPolygon.setMap(null);
 	}
 	</property>
-    <property name="polygonDataProperties">Name,Level,DefaultZoom,Color,TotalValue</property>
+    <property name="polygonDataProperties">Name,ParentName,Level,DefaultZoom,TotalValue,TotalPlannedValue,ParameterName</property>
     <property name="polygonTitleProperty">Name</property>
     <property name="strokeOpacity">1</property>
     <property name="strokeWeight">1.2</property>

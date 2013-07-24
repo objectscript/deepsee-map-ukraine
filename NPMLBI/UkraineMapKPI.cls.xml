@@ -23,10 +23,14 @@ NPMLBI.UkraineMapKPI</Description>
 <property name="Address" displayName="Адрес" columnNo="8"/>
 <property name="Level" displayName="Level" columnNo="9"/>
 <property name="TotalValue" displayName="TotalValue" columnNo="10"/>
-<property name="SpecialIcon" displayName="TotalValue" columnNo="11"/>
+<property name="TotalPlannedValue" displayName="TotalPlannedValue" columnNo="11"/>
+<property name="SpecialIcon" displayName="SpecialIcon" columnNo="12"/>
+<property name="ParameterName" displayName="ParameterName" columnNo="13"/>
 
 <filter name="LevelFilter" displayName="Родитель" defaultValue="0;-"/>
 <filter name="LevelStart" displayName="Начальный уровень" displayList="Регионы Украины,Области Украины" valueList="0,1" defaultValue="0"/>
+<filter name="ParameterName" displayName="Параметр" sql="SELECT DISTINCT %EXACT(Name) FROM NPMLBI.Parameter"/>
+
 </kpi>
 ]]></Data>
 </XData>
@@ -37,44 +41,39 @@ NPMLBI.UkraineMapKPI</Description>
 <Implementation><![CDATA[
 	set levelFilter = $piece(..%filterValues.LevelFilter, ";", 1)
 	set parentNameFilter = $piece(..%filterValues.LevelFilter, ";", 2)
-
+	
 	if (..%filterValues.LevelStart = "0")
 	{
-		// Верхний уровень - Части Украины
-			
-		if (levelFilter = "") || (parentNameFilter = "") || (parentNameFilter = "-")
-		{
-			// Отображение частей Украины
+		if (levelFilter = "") || (parentNameFilter = "")
+		{	
+			// Начальный уровень - Части Украины
 			set pSQL = ..GetStringFromXData("sqlLevelZero")
-		}	
+		}
 		elseif (levelFilter = "0") && (parentNameFilter '= "")
 		{
 			// Углубление в часть Украины, у которой уровень = 0 и имя = parentNameFilter
 			set pSQL = ..GetStringFromXData("sqlLevelOne")
 			set pSQL = $replace(pSQL, ":parentNameCondition", "AND ParentName = '"_parentNameFilter_"'")
+			set pSQL = $replace(pSQL, ":NULLifStartLevel", "")
 		}
 	}
 	elseif (..%filterValues.LevelStart = "1") && ((levelFilter = "") || (parentNameFilter = "") || (parentNameFilter = "-"))
 	{
-		// Верхний уровень - Области Украины
+		// Начальный уровень - Области Украины
 		// Отображение всех областей
 		set pSQL = ..GetStringFromXData("sqlLevelOne")
 		set pSQL = $replace(pSQL, ":parentNameCondition", "")
+		set pSQL = $replace(pSQL, ":NULLifStartLevel", "'-' As ")
 	}
-	else
+	elseif (levelFilter = "0") && (parentNameFilter '= "")
 	{
 		// Если в момент углубления в область была произведена смена начального слоя
-		if (levelFilter = "0") && (parentNameFilter '= "")
-		{
-			// Углубление в часть Украины, у которой уровень = 0 и имя = parentNameFilter
-			set pSQL = ..GetStringFromXData("sqlLevelOne")
-			set pSQL = $replace(pSQL, ":parentNameCondition", "AND ParentName = '"_parentNameFilter_"'")
-		}
-		else
-		{
-			set pSQL = "SELECT NULL"
-		}
+		// Углубление в часть Украины, у которой уровень = 0 и имя = parentNameFilter
+		set pSQL = ..GetStringFromXData("sqlLevelOne")
+		set pSQL = $replace(pSQL, ":parentNameCondition", "AND ParentName = '"_parentNameFilter_"'")
+		set pSQL = $replace(pSQL, ":NULLifStartLevel", "")
 	}
+	
 	
 	// Углубление область Украины, у которой уровень = 1 и имя = parentNameFilter
 	if (levelFilter = "1") && (parentNameFilter '= "")
@@ -82,7 +81,16 @@ NPMLBI.UkraineMapKPI</Description>
 		set pSQL = ..GetStringFromXData("sqlLevelTwo")
 		set pSQL = $replace(pSQL, ":parentName", parentNameFilter)
 	}
-
+	
+	if (..%filterValues.ParameterName '= "")
+	{
+		set pSQL = $replace(pSQL, ":parameterName", ..%filterValues.ParameterName)
+	}
+	else
+	{
+		set pSQL = "SELECT NULL"
+	}
+	
 	quit $$$OK
 ]]></Implementation>
 </Method>
@@ -92,8 +100,9 @@ NPMLBI.UkraineMapKPI</Description>
 Части Украины, полигоны (уровнеь 0)</Description>
 <Data><![CDATA[
 <xml><![CDATA[
+
 SELECT Name,
-       'rgb(' || Color || ',' || (255 - Color) ||',0)' As Color,
+       NULL As Color,
 	   NULL As Latitude,
 	   NULL As Longitude,
 	   ParentName,
@@ -102,16 +111,10 @@ SELECT Name,
 	   NULL As Address,
 	   "Level",
 	   TotalValue,
-	   NULL As SpecialIcon
-FROM
-(
-		SELECT Name,
-			   round((255 * (TotalValue - MIN(TotalValue))) / (MAX(TotalValue) - MIN(TotalValue) + 0.1), 0) As Color,
-			   ParentName,
-			   DefaultZoom,
-			   CanDrillDown,
-			   "Level",
-			   TotalValue
+	   TotalPlannedValue,
+	   NULL As SpecialIcon,
+	   ':parameterName' As ParameterName
+			   
 		FROM
 		(
 			   SELECT Name,
@@ -122,16 +125,23 @@ FROM
 			   ( SELECT SUM(TotalValue) 
 				 FROM
 				 (
-					SELECT (SELECT SUM(td.Value) FROM NPMLBI.TestData As td WHERE td.UKR->ParentName = FirstLevel.Name) As TotalValue
+					SELECT (SELECT SUM(td.Value) FROM NPMLBI.TestData As td WHERE td.UKR->ParentName = FirstLevel.Name AND td.Parameter->Name = ':parameterName') As TotalValue
 					FROM NPMLBI.UkraineMap As FirstLevel
 					WHERE "Level" = 1 AND ParentName = ZeroLevel.Name
 				 )
-			   ) As TotalValue
-	   
-		FROM NPMLBI.UkraineMap As ZeroLevel
-		WHERE "Level" = 0
+			   ) As TotalValue,
+	   		   ( SELECT SUM(TotalPlannedValue) 
+				 FROM
+				 (
+					SELECT (SELECT SUM(td.PlannedValue) FROM NPMLBI.TestData As td WHERE td.UKR->ParentName = FirstLevel.Name AND td.Parameter->Name = ':parameterName') As TotalPlannedValue
+					FROM NPMLBI.UkraineMap As FirstLevel
+					WHERE "Level" = 1 AND ParentName = ZeroLevel.Name
+				 )
+			   ) As TotalPlannedValue
+				FROM NPMLBI.UkraineMap As ZeroLevel
+				WHERE "Level" = 0
 		)
-)
+
 ]]]]><![CDATA[></xml>
 ]]></Data>
 </XData>
@@ -142,28 +152,18 @@ FROM
 <Data><![CDATA[
 <xml><![CDATA[
 SELECT Name,
-       'rgb(' || Color || ',' || (255 - Color) ||',0)' As Color,
+       NULL As Color,
 	   NULL As Latitude,
 	   NULL As Longitude,
-	   ParentName,
+	   :NULLifStartLevel ParentName,
 	   DefaultZoom,
 	   CanDrillDown,
 	   NULL As Address,
 	   "Level",
 	   TotalValue,
-	   NULL As SpecialIcon
-FROM
-(
-	SELECT Name,
-       round((255 * (TotalValue - MIN(TotalValue))) / (MAX(TotalValue) - MIN(TotalValue) + 0.1), 0) As Color,
-	   Latitude,
-	   Longitude,
-	   ParentName,
-	   DefaultZoom,
-	   CanDrillDown,
-	   Address,
-	   "Level",
-	   TotalValue
+	   TotalPlannedValue,
+	   NULL As SpecialIcon,
+	   ParameterName
 	FROM
     (
        SELECT Name,
@@ -174,11 +174,12 @@ FROM
 	   CanDrillDown,
 	   Address,
 	   "Level",
-	   (SELECT SUM(td.Value) FROM NPMLBI.TestData As td WHERE td.UKR->ParentName = ukr.Name) As TotalValue	
+	   (SELECT SUM(td.Value) FROM NPMLBI.TestData As td WHERE td.UKR->ParentName = ukr.Name AND td.Parameter->Name = ':parameterName') As TotalValue,
+	   (SELECT SUM(td.PlannedValue) FROM NPMLBI.TestData As td WHERE td.UKR->ParentName = ukr.Name AND td.Parameter->Name = ':parameterName') As TotalPlannedValue,
+	   ':parameterName' As ParameterName
 	   FROM NPMLBI.UkraineMap As ukr
 	   WHERE "Level" = 1 :parentNameCondition
-	)	   
-)
+	)
 ]]]]><![CDATA[></xml>
 ]]></Data>
 </XData>
@@ -197,8 +198,10 @@ SELECT Name,
 	   CanDrillDown,
 	   Address,
 	   "Level",
-	   (SELECT td.Value FROM NPMLBI.TestData As td WHERE td.UKR->Name = ukr.Name) As TotalValue,
-	   MainCity As SpecialIcon
+	   (SELECT td.Value FROM NPMLBI.TestData As td WHERE td.UKR->Name = ukr.Name AND td.Parameter->Name = ':parameterName') As TotalValue,
+	   (SELECT td.PlannedValue FROM NPMLBI.TestData As td WHERE td.UKR->Name = ukr.Name AND td.Parameter->Name = ':parameterName') As TotalPlannedValue,
+	   MainCity As SpecialIcon,
+	   ':parameterName' As ParameterName
 FROM NPMLBI.UkraineMap As ukr
 WHERE "Level" = 2 AND ParentName = ':parentName'
 ]]]]><![CDATA[></xml>

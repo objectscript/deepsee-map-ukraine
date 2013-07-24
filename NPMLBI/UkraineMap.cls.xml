@@ -105,7 +105,7 @@
 <Type>%Integer</Type>
 </Property>
 
-<Method name="populateRegions">
+<Method name="Populate">
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[

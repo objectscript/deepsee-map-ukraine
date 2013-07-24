@@ -1,7 +1,10 @@
 <cspapp>/NPMLBI.js
 <cspapp>/polygonsUKR.js
+NPMLBI.Borders.CLS
+NPMLBI.Parameter.CLS
 NPMLBI.TestData.CLS
 NPMLBI.UkraineMap.CLS
 NPMLBI.UkraineMapKPI.CLS
 NPMLBI.UkraineMapPortlet.CLS
+NPMLBI.Utils.CLS
 UkraineDashboards-UkraineDashboard.dashboard.DFI

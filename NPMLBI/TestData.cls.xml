@@ -8,34 +8,115 @@
 <Type>NPMLBI.UkraineMap</Type>
 </Property>
 
+<Property name="Parameter">
+<Type>NPMLBI.Parameter</Type>
+</Property>
+
 <Property name="Value">
 <Type>%Float</Type>
 </Property>
 
-<Method name="populateTestData">
+<Property name="PlannedValue">
+<Type>%Float</Type>
+</Property>
+
+<Method name="Populate">
 <ClassMethod>1</ClassMethod>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
+
 	set sc = ..%DeleteExtent()
-
-	&sql(DECLARE TestCur CURSOR FOR 
-		 SELECT ID
-		 FROM NPMLBI.UkraineMap
-		 WHERE "Level" = 2)	
-		
-	&sql(OPEN TestCur)
-	for  
+	
+	
+	set list = ##class(%ListOfDataTypes).%New()
+	
+	
+	//запад
+	do list.Insert("Закарпатська область;40000;3.35")
+	do list.Insert("Івано-Франківська область;50000;0.85")
+	do list.Insert("Львівська область;10000;1.65")
+	do list.Insert("Чернівецька область;17000;1.88")
+	do list.Insert("Рівненська область;50000;2")
+	do list.Insert("Тернопільська область;67000;0.42")
+	do list.Insert("Волинська область;20000;0.7")
+	
+	//центр
+	do list.Insert("Вінницька область;15000;1.9")
+	do list.Insert("Житомирська область;35000;1.2")
+	do list.Insert("Київська область;95000;0.8")
+	do list.Insert("Кіровоградська область;190000;0.10")
+	do list.Insert("Хмельницька область;87000;0.2")
+	do list.Insert("Черкаська область;27000;0.66")
+	
+	// восток центр
+	do list.Insert("Сумська область;33000;0.5")
+	do list.Insert("Чернігівська область;23000;1.5")
+	do list.Insert("Полтавська область;89000;1")
+	do list.Insert("Дніпропетровська область;25000;1.8")
+	
+	//восток
+	do list.Insert("Донецька область;30000;0.6")
+	do list.Insert("Харківська область;57000;2.5")
+	do list.Insert("Луганська область;65000;1.6")
+	
+	//юг
+	do list.Insert("Херсонська область;47000;2.6")
+	do list.Insert("АР Крим;10000;1.3")
+	do list.Insert("Запорізька область;45000;1.0")
+	do list.Insert("Одеська область;40000;2")
+	do list.Insert("Миколаївська область;75000;4")
+	
+	for i=1:1:list.Count()
 	{
-		&sql(FETCH TestCur INTO :id) 
-		quit:(SQLCODE '= 0)
-
-		set test = ..%New()
-		set test.UKR = ##class(NPMLBI.UkraineMap).%OpenId(id)
-		set test.Value = 10 + $RANDOM(500) 
-		do test.%Save() 
-	}
+		set name = $p(list.GetAt(i), ";", 1)
+		set val = $p(list.GetAt(i), ";", 2)
 		
-	&sql(CLOSE TestCur)
+		&sql(SELECT COUNT(ID) INTO:countCity 
+			 FROM NPMLBI.UkraineMap
+			 WHERE "Level" = 2 AND ParentName = :name)
+			 
+		
+		&sql(DECLARE UrkCur CURSOR FOR 
+			 SELECT ID
+			 FROM NPMLBI.UkraineMap
+			 WHERE "Level" = 2 AND ParentName = :name)
+			
+		&sql(OPEN UrkCur)
+		for  
+		{
+			&sql(FETCH UrkCur INTO :ukrId) 
+			quit:(SQLCODE '= 0)
+			
+			//-----------------------------
+			&sql(DECLARE ParamCur CURSOR FOR 
+		 		 SELECT ID
+		    	 FROM NPMLBI.Parameter)	
+		
+			&sql(OPEN ParamCur)
+			for  
+			{
+				&sql(FETCH ParamCur INTO :paramId) 
+				quit:(SQLCODE '= 0)
+				
+				
+				set planVal = val + (val * ($p(list.GetAt(i), ";", 3) + $RANDOM(paramId)))
+		
+				set test = ..%New()
+				set test.UKR = ##class(NPMLBI.UkraineMap).%OpenId(ukrId)
+				set test.Parameter = ##class(NPMLBI.Parameter).%OpenId(paramId)
+			
+				set test.Value = $NUMBER(val/ countCity, 0) + $RANDOM(100) + $RANDOM(paramId*10)
+				set test.PlannedValue = $NUMBER(planVal  / countCity, 0) + $RANDOM(100) + $RANDOM(paramId*10)
+				
+				do test.%Save() 
+			}
+		
+			&sql(CLOSE ParamCur)
+			//-----------------------------
+		}
+		
+		&sql(CLOSE UrkCur)
+	}
 	
 	quit $$$OK
 ]]></Implementation>
@@ -64,6 +145,21 @@
 </Value>
 <Value name="5">
 <Value>UKR</Value>
+</Value>
+<Value name="6">
+<Value>ValueParameter1</Value>
+</Value>
+<Value name="7">
+<Value>ValueParameter2</Value>
+</Value>
+<Value name="8">
+<Value>ValueParameter3</Value>
+</Value>
+<Value name="9">
+<Value>Parameter</Value>
+</Value>
+<Value name="10">
+<Value>PlannedValue</Value>
 </Value>
 </Data>
 </Storage>

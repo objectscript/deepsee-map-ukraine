@@ -194,20 +194,24 @@ Marker icon size (ignored if both markerIcon and markerIconProperty are not set)
 <Type>%ZEN.Datatype.string</Type>
 </Property>
 
-<Property name="additionalInfo">
-<Description>
-Additional text information after polygon/marker title in brackets                            [+]</Description>
-<Type>%ZEN.Datatype.string</Type>
-</Property>
+<UDLText name="T">
+<Content><![CDATA[
+// [!]Property additionalInfo As %ZEN.Datatype.string;
 
-<Property name="additionalInfoProperty">
-<Description>
-Additional value information after polygon/marker title in brackets                           [+]</Description>
-<Type>%ZEN.Datatype.string</Type>
-</Property>
+]]></Content>
+</UDLText>
+
+<UDLText name="T">
+<Content><![CDATA[
+// [!]Property additionalInfoProperty As %ZEN.Datatype.string;
+
+]]></Content>
+</UDLText>
 
 <Property name="onapplyfilters">
 <Description>
+Additional text information after polygon/marker title in brackets                            [+]
+Additional value information after polygon/marker title in brackets                           [+]
 onapplyfilters event handler</Description>
 <Type>%ZEN.Datatype.eventHandler</Type>
 </Property>
@@ -284,8 +288,8 @@ Where "<< Back" button is located]]></Description>
 	set pInfo($I(pInfo)) = $LB("markerSpecialProperty","","%ZEN.Datatype.string","Marker special property","Marker special property for special icon")
 	set pInfo($I(pInfo)) = $LB("markerIconSize","","%ZEN.Datatype.string","Marker icon size","Default marker icon size (ingored if Marker icon is not set)")
 	
-	set pInfo($I(pInfo)) = $LB("additionalInfo","","%ZEN.Datatype.string","Additional Info","Additional text information after polygon/marker title in brackets")
-	set pInfo($I(pInfo)) = $LB("additionalInfoProperty","","%ZEN.Datatype.string","Additional Info Property","Additional value information after polygon/marker title in brackets")
+	//[!]set pInfo($I(pInfo)) = $LB("additionalInfo","","%ZEN.Datatype.string","Additional Info","Additional text information after polygon/marker title in brackets")
+	//[!]set pInfo($I(pInfo)) = $LB("additionalInfoProperty","","%ZEN.Datatype.string","Additional Info Property","Additional value information after polygon/marker title in brackets")
 	
 	
 	set pInfo($I(pInfo)) = $LB("coordsJsFile","","%ZEN.Datatype.string","JS file with coords","JS file with javascript 'function loadCoordinates(polygonCoordsArray) {...}' that populates polygonCoordsArray argument with polygon coordinates keyed by values from the data source property specified in 'Polygon coords property' setting.")
@@ -396,7 +400,29 @@ Initialize the map</Description>
 	this._prevZoom = [];
 	this._prevCenter = [];
 	this._drillDownTitle = [];
+	
+	// slider range -----------------------------------
+	this._sliderRangeData = {
+							 paramName: null,
+							 parentName: null,
+							 isChanged: false,
+							 level: null, 
+							 currentBorderMin: null, 
+							 currentBorderMax: null
+							 };
+	
 
+	var sliderDiv = document.createElement('div');
+	sliderDiv.style.padding = '3px';
+
+	var sliderUI = document.createElement('div');
+	sliderUI.id = 'rangeSliderEdit';
+	sliderUI.innerHTML = '<div id=\'rightSliderPart\'><input id=\'btnSaveRanges\' type=\'button\'  class=\'sliderEditRight\' value=\'Изменить диапазон\' onclick="zenPage.getComponentById(\'$widget_1/portlet\').openEditRange();"/></div><div id=\'leftSliderPart\' class=\'sliderEditLeft\'><input title=\'Минимальное значение параметра\' readonly=\'true\' type=\'text\' id=\'minSliderRange\'/><input title=\'Границы палитры\' readonly=\'true\' type=\'text\' id=\'valuesSliderRange\'/><input title=\'Максимальное значение параметра\' readonly=\'true\' type=\'text\' id=\'maxSliderRange\'/><div id=\'slider-range\'></div></div>';
+	sliderDiv.appendChild(sliderUI);
+	sliderDiv.index = 1;
+	map.controls[google.maps.ControlPosition.TOP_RIGHT].push(sliderDiv);
+    // ------------------------------------------------
+	
 	// add listeners
 	var code = new Function('zenPage.getComponent('+this.index+').zoomChangedHandler();');
 	google.maps.event.addListener(map, 'zoom_changed', code);
@@ -897,7 +923,7 @@ Internal method: acquire data for this view and store a copy in a local cache.</
 			var longCol = -1;
 			var clickableCol = -1;
 			var miCol = -1;
-			var addInfoCol = -1;
+			//[!]var addInfoCol = -1;
 			var specIconCol = -1;
 		}
 		else {
@@ -928,9 +954,9 @@ Internal method: acquire data for this view and store a copy in a local cache.</
 					if (pname == this.markerIconProperty) {
 						miCol = p;
 					}
-					if (pname == this.additionalInfoProperty) {
-						addInfoCol = p;
-					}
+					//[!]if (pname == this.additionalInfoProperty) {
+					//[!]	addInfoCol = p;
+					//[!]}
 					if (pname == this.markerSpecialProperty) {
 						specIconCol = p;
 					}
@@ -944,7 +970,7 @@ Internal method: acquire data for this view and store a copy in a local cache.</
 					var isClickable = 1;
 					var mi = null;
 					var specIcon = 0;
-					var addInfo = 0;
+					//[!]var addInfo = 0;
 					var sname = controller.getLabel(n,labelDim);
 
 					if (!invert) {
@@ -954,7 +980,7 @@ Internal method: acquire data for this view and store a copy in a local cache.</
 						if (clickableCol >= 0) isClickable = controller.getData(clickableCol,n);
 						if (miCol >= 0) mi = controller.getData(miCol,n);
 						if (specIconCol >= 0) specIcon = controller.getData(specIconCol,n);
-						if (addInfoCol >= 0) addInfo = controller.getData(addInfoCol,n);
+						//[!]if (addInfoCol >= 0) addInfo = controller.getData(addInfoCol,n);
 					}
 					else {
 						var lat = controller.getDataByName(this.latitudeProperty,n);
@@ -963,7 +989,7 @@ Internal method: acquire data for this view and store a copy in a local cache.</
 						if (this.isClickableProperty != '') isClickable = controller.getDataByName(this.isClickableProperty,n);
 						if (this.markerIconProperty != '') mi = controller.getDataByName(this.markerIconProperty,n);
 						if (this.markerSpecialProperty != '') specIcon = controller.getDataByName(this.markerSpecialProperty,n);
-						if (this.additionalInfoProperty != '') addInfo = controller.getDataByName(this.additionalInfoProperty,n);
+						//[!]if (this.additionalInfoProperty != '') addInfo = controller.getDataByName(this.additionalInfoProperty,n);
 					}
 			
 					if (!isNaN(parseFloat(lat)) && !isNaN(parseFloat(long))) {
@@ -985,7 +1011,7 @@ Internal method: acquire data for this view and store a copy in a local cache.</
 							isClickable: (!isClickable ? 1 : isClickable),
 							icon: mi,
 							specialIcon: specIcon,
-							additionalInfoValue: addInfo,
+							/*/[!]additionalInfoValue: addInfo,*/
 							data: data
 						};
 					}
@@ -1018,7 +1044,7 @@ Internal method: acquire data for this view and store a copy in a local cache.</
 			var colorCol = -1;
 			var foCol = -1;
 			var clickableCol = -1;
-			var addInfoCol = -1;
+			//[!]var addInfoCol = -1;
 		}
 		else {
 			var seriesSize = controller.getDimSize(2);
@@ -1050,9 +1076,9 @@ Internal method: acquire data for this view and store a copy in a local cache.</
 						titleCol = p;
 					}
 					
-					if (pname == this.additionalInfoProperty) {
-						addInfoCol = p;
-					}
+					//[!]if (pname == this.additionalInfoProperty) {
+					//[!]	addInfoCol = p;
+					//[!]}
 				}
 			
 			// each series corresponds to a poly
@@ -1061,7 +1087,7 @@ Internal method: acquire data for this view and store a copy in a local cache.</
 				var color = 'purple';
 				var fo = this.fillOpacity;  // default opacity
 				var isClickable = 1;
-				var addInfo = 0;
+				//[!]var addInfo = 0;
 				var sname = controller.getLabel(n,labelDim);
 
 				if (!invert) {
@@ -1071,7 +1097,7 @@ Internal method: acquire data for this view and store a copy in a local cache.</
 					if (foCol >= 0) fo = controller.getData(foCol,n);
 					if (clickableCol >= 0) isClickable = controller.getData(clickableCol,n);
 					if (titleCol >= 0) sname = controller.getData(titleCol,n);
-					if (addInfoCol >= 0) addInfo = controller.getData(addInfoCol,n);
+					//[!]if (addInfoCol >= 0) addInfo = controller.getData(addInfoCol,n);
 				}
 				else {
 					var coords = controller.getDataByName(this.coordsProperty,n);
@@ -1079,7 +1105,7 @@ Internal method: acquire data for this view and store a copy in a local cache.</
 					if (this.fillOpacityProperty != '') fo = controller.getDataByName(this.fillOpacityProperty,n);
 					if (this.isClickableProperty != '') isClickable = controller.getDataByName(this.isClickableProperty,n);
 					if (this.polygonTitleProperty != '') sname = controller.getDataByName(this.polygonTitleProperty,n);
-					if (this.additionalInfoProperty != '') addInfo = controller.getDataByName(this.additionalInfoProperty,n);
+					//[!]if (this.additionalInfoProperty != '') addInfo = controller.getDataByName(this.additionalInfoProperty,n);
 				}
 				
 				if (!fo) fo = this.fillOpacity;  // default opacity
@@ -1114,7 +1140,7 @@ Internal method: acquire data for this view and store a copy in a local cache.</
 					color: (!color ? 'purple' : color),
 					fo: (!fo ? 0.1 : fo),
 					isClickable: (!isClickable ? 1 : isClickable),
-					additionalInfoValue: addInfo,
+					/*/[!]	additionalInfoValue: addInfo,*/
 					data: data
 				};
 
@@ -1147,6 +1173,7 @@ Internal method: sync markers to data from controller.</Description>
 					if(this.markerSpecialIcon != "" && md.specialIcon == 1)
 						md.icon = this.markerSpecialIcon;
 					
+				
 					this.setAdditionalInfo(md);
 					
 					var marker = this.addMarker(n, md.latitude, md.longitude, md.title, md.isClickable, md.icon, md.data);
@@ -1231,27 +1258,60 @@ Internal method: sync polygons to data from controller.</Description>
 	
 	var map = this.getMapObject();
 	
-	try {
+	try 
+	{
 		var controller = this.getController();
-		if (null == controller) {
+		
+		if (null == controller)
 			return;
-		}
 	
 		this.clearPolygons();
-
-		if (this._polygonData) {
-			for (var n = 0; n < this._polygonData.length; n++) {
+		
+		var currBorders;
+		
+		if (this._polygonData && this._polygonData.length > 0) 
+		{
+			// Границы для параметра в текущем начальном уровне или в углублении
+			if(this._sliderRangeData.paramName != this._polygonData[0].data.ParameterName || this._sliderRangeData.level != this._polygonData[0].data.Level)	
+				currBorders = this.GetDataForParameter(this._polygonData[0].data.ParameterName, this._polygonData[0].data.Level, this._polygonData[0].data.ParentName).split(';');
+			else
+				currBorders = [this._sliderRangeData.currentBorderMin, this._sliderRangeData.currentBorderMax];
+			
+			currBorders = [parseFloat(currBorders[0]), parseFloat(currBorders[1])]
+			
+			for (var n = 0; n < this._polygonData.length; n++) 
+			{
 				var md = this._polygonData[n];
-				if (md) {
-					var poly = this.addPolygon(n, md.coords, md.color, md.fo, md.isClickable, md.title, md.data);
+				
+				if (md) 
+				{
+					md.color = this.getPolygonColor(currBorders[0], currBorders[1], md.data.TotalPlannedValue, md.data.TotalValue);
 					
 					this.setAdditionalInfo(md);
 					
-					if (poly && map && md.title) poly.tooltip = new TooltipOverlay(map, md.title);
+					var poly = this.addPolygon(n, md.coords, md.color, md.fo, md.isClickable, md.title, md.data);
 					
-					if (poly) zenInvokeCallbackMethod(this.onaddpolygon,this,'onaddpolygon','polygon',poly);
+					if (poly && map && md.title) 
+						poly.tooltip = new TooltipOverlay(map, md.title);
+					
+					if (poly) 
+						zenInvokeCallbackMethod(this.onaddpolygon,this,'onaddpolygon','polygon',poly);
 				}
 			}
+			
+			
+		}
+	
+		if (this._polygonData && this._polygonData.length > 0) 
+		{
+			this._sliderRangeData = {
+							 paramName: this._polygonData[0].data.ParameterName,
+							 parentName: this._polygonData[0].data.ParentName,
+							 level: this._polygonData[0].data.Level,
+							 currentBorderMin: currBorders[0], 
+							 currentBorderMax: currBorders[1],
+							 isChanged: this._sliderRangeData.isChanged
+							 };
 		}
 	}
 	catch(ex) {
@@ -1260,16 +1320,56 @@ Internal method: sync polygons to data from controller.</Description>
 ]]></Implementation>
 </Method>
 
+<Method name="getPolygonColor">
+<Description>
+Вычисление цвета: меньше мин - красный цвет, больше макс - зеленый, остальное - промежуточный</Description>
+<FormalSpec>min,max,plannedValue,realValue</FormalSpec>
+<Language>javascript</Language>
+<ReturnType>%ZEN.Datatype.string</ReturnType>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	var polyPercent = realValue / plannedValue;
+	var middle = (max + min) / 2;
+	if (polyPercent > 1)
+		polyPercent = 1;
+	
+	var color = 'blue';
+		
+	if (polyPercent >= max)
+	{
+		color = 'rgb(0,255,0)';
+	}
+	else if (polyPercent <= min)
+	{
+		color = 'rgb(255,0,0)';
+	}
+	else if (polyPercent >= middle)
+	{
+		var partOfRed = (max - polyPercent)/(middle - min);
+		color = 'rgb(' + Math.round(255 * partOfRed) + ' , 255, 0)';
+	}
+	else
+	{
+		var partOfGreen = (polyPercent - min)/(middle - min);
+		color = 'rgb(255, ' + Math.round(255 * partOfGreen) + ', 0)';
+	}
+	
+	return color;
+]]></Implementation>
+</Method>
+
 <Method name="setAdditionalInfo">
 <Description>
 Add additional info to the title of marker|polygon</Description>
 <Internal>1</Internal>
-<FormalSpec>data</FormalSpec>
+<FormalSpec>md</FormalSpec>
 <Language>javascript</Language>
 <ClientMethod>1</ClientMethod>
 <Implementation><![CDATA[
-	if(this.additionalInfo != "")
-		data.title = data.title  + ' (' + ((data.additionalInfoValue) ? data.additionalInfoValue + ' ' + this.additionalInfo + ')' : 'нет данных)');
+	  if (md.data.TotalValue > 0 && md.data.TotalPlannedValue > 0)
+	  {
+			md.title = md.data.Name + ' (' +  Math.round((md.data.TotalValue/md.data.TotalPlannedValue)*100) + '%)';
+	  }
 ]]></Implementation>
 </Method>
 
@@ -1281,7 +1381,7 @@ Perform a drilldown</Description>
 <Language>javascript</Language>
 <ClientMethod>1</ClientMethod>
 <Implementation><![CDATA[
-
+	
 	var map = this.getMapObject();
 	
 	if (map)
@@ -1686,6 +1786,11 @@ Callback for geocoder API.</Description>
 	{
 		&html<<script type='text/javascript' src='#(..coordsJsFile)#'></script>>
 	}
+	
+	&html<
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	>
 ]]></Implementation>
 </Method>
 
@@ -1694,8 +1799,436 @@ Callback for geocoder API.</Description>
 <FormalSpec>refresh</FormalSpec>
 <Language>javascript</Language>
 <ClientMethod>1</ClientMethod>
-<Implementation><![CDATA[	zenInvokeCallbackMethod(this.onapplyfilters,this,'onapplyfilters','refresh',refresh);
+<Implementation><![CDATA[
+	zenInvokeCallbackMethod(this.onapplyfilters,this,'onapplyfilters','refresh',refresh);
+	
+	$("#leftSliderPart" ).hide(1);
+	this._sliderRangeData.parentName = null
 ]]></Implementation>
 </Method>
+
+<Method name="SaveBorders">
+<Description>
+Сохранить проценты-границы для текущего параметра и уровня</Description>
+<FormalSpec>paramName:%String,level:%Integer,parentName:%String,min:%Float,max:%Float</FormalSpec>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[	do ##class(NPMLBI.Borders).SetBorders(paramName, level, parentName, min, max)
+]]></Implementation>
+</Method>
+
+<Method name="GetDataForParameter">
+<Description>
+Получить минимальный и максимальный процент, и имя условной единицы параметра ("min;max;y.e")</Description>
+<FormalSpec>paramName:%String,level:%Integer,parentName:%String</FormalSpec>
+<ReturnType>%ZEN.Datatype.string</ReturnType>
+<ZenMethod>1</ZenMethod>
+<Implementation><![CDATA[	quit ##class(NPMLBI.Borders).GetBorders(paramName, level, parentName)
+]]></Implementation>
+</Method>
+
+<Method name="openEditRange">
+<Description>
+Открыть / закрыть слайдер диапазона</Description>
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	if($("#leftSliderPart").is(":visible"))
+	{
+		$("#leftSliderPart" ).hide(1);
+		$("#btnSaveRanges").attr('value', 'Изменить диапазон');
+		
+		if (this._sliderRangeData.isChanged == true)
+		{
+			this.SaveBorders(this._sliderRangeData.paramName, this._sliderRangeData.level, this._sliderRangeData.parentName, this._sliderRangeData.currentBorderMin, this._sliderRangeData.currentBorderMax);	
+		}
+		
+		this._sliderRangeData.isChanged = false;
+	}
+	else
+	{
+		$( "#slider-range" ).slider({
+								 range: true,
+								 min: 0,
+								 max: 100,
+								 step:1,
+								 values: [ parseInt(this._sliderRangeData.currentBorderMin * 100), parseInt(this._sliderRangeData.currentBorderMax * 100) ],
+								 stop:  function(event, ui) 
+								 		{ 
+											var values = $("#slider-range").slider( "option", "values" );
+											
+											try
+											{
+												zenPage.getComponentById("$widget_1/portlet")._sliderRangeData.currentBorderMin = values[0] / 100;
+												zenPage.getComponentById("$widget_1/portlet")._sliderRangeData.currentBorderMax = values[1] / 100;
+												zenPage.getComponentById("$widget_1/portlet")._sliderRangeData.isChanged = true;
+												
+												zenPage.getComponentById("$widget_1/portlet").syncPolygons();
+											}											
+											catch(ex) 
+											{
+												alert('$widget_1/portlet не найден');
+											}
+								 		},
+								 slide: function( event, ui ) 
+								 		{
+											$( "#valuesSliderRange" ).val( ui.values[ 0 ] + " %   -   " + ui.values[ 1 ] + " %" );
+										}
+								});
+	
+		$( "#minSliderRange" ).val("0 %");
+		$( "#maxSliderRange" ).val("100 %");		
+		$( "#valuesSliderRange" ).val($( "#slider-range" ).slider( "values", 0 ) + " %   -   " + $( "#slider-range" ).slider( "values", 1 ) + " %" );
+
+	
+		$("#leftSliderPart" ).show(1);
+		$("#btnSaveRanges").attr('value', 'Сохранить диапазон');
+	}
+]]></Implementation>
+</Method>
+
+<XData name="Style">
+<Description>
+Style for the portlet</Description>
+<Data><![CDATA[
+<style type="text/css">
+input:read-only
+{
+	background-color:white;
+}
+
+.sliderEditLeft,.sliderEditRight,.sliderEditLeftAction {
+  border: 1px solid rgb(0, 0, 0);
+color: rgb(255, 255, 255);
+background-color: rgb(53, 107, 141);
+box-shadow: rgb(127, 127, 127) 2px 2px 4px;
+white-space: nowrap;
+font: icon;
+font-family: Tahoma, sans-serif;
+font-size: 13px;
+padding: 1px 8px;
+display: block;
+visibility: visible;
+left: 70px;
+top: 5px;
+}
+
+#btnSaveRanges:hover, #slider-range:hover,.sliderEditLeftAction:hover 
+{
+
+	cursor: pointer;
+}
+
+#btnSaveRanges
+{
+	float: right;
+}
+
+#maxSliderRange, #minSliderRange, #valuesSliderRange 
+{
+	width: 117px;
+	border: 0; 
+	color: #356B8D; 
+	font-weight: bold;
+}
+
+#maxSliderRange:hover, #minSliderRange:hover, #valuesSliderRange:hover
+{
+	cursor: pointer;
+}
+
+
+#valuesSliderRange
+{
+	text-align: center;
+}
+
+#minSliderRange
+{
+	text-align: left;
+}
+
+#maxSliderRange
+{
+	text-align: right;
+}
+
+.sliderEditLeft{
+background-color: white;
+}
+
+#leftSliderPart
+{
+	float:left; 
+	height:48px;
+	width: 350px;
+	display: none;
+	padding: 5px 15px 8px 15px;
+	margin-top: -2px;
+}
+
+.sliderEditLeftAction
+{
+	display: inline;
+	margin: 5px 0 0 37px;
+}
+
+#rightSliderPart
+{
+	margin-right: -2px;
+}
+
+#actionButtons
+{
+	padding-top: 5px;
+}
+
+	@-moz-document url-prefix() 
+	{
+  		#leftSliderPart 
+  		{
+	  		margin-top: -1px;
+			margin-right: -2px;
+			height:44px;
+		}
+		
+		#maxSliderRange, #minSliderRange, #valuesSliderRange 
+		{
+			padding-bottom: 5px;
+		}
+		
+		#rightSliderPart 
+		{
+    		margin-top: 2px;
+		}
+		
+		.sliderEditLeft,.sliderEditRight,.sliderEditLeftAction 
+		{
+			padding: 0px 8px;
+		}
+	}
+
+.portletDiv {
+	padding: 5px;
+	font-size: 25px;
+}
+
+/*=========================*/
+.ui-slider {
+	position: relative;
+	text-align: left;
+}
+
+.ui-slider .ui-slider-handle {
+	position: absolute;
+	z-index: 2;
+	width: 1.2em;
+	height: 1.2em;
+	cursor: default;
+}
+.ui-slider .ui-slider-range {
+	position: absolute;
+	z-index: 1;
+	font-size: .7em;
+	display: block;
+	border: 0;
+	background-position: 0 0;
+}
+
+/* For IE8 - See #6727 */
+.ui-slider.ui-state-disabled .ui-slider-handle,
+.ui-slider.ui-state-disabled .ui-slider-range {
+	filter: inherit;
+}
+
+.ui-slider-horizontal {
+	height: .8em;
+}
+.ui-slider-horizontal .ui-slider-handle {
+	top: -.3em;
+	margin-left: -.6em;
+}
+.ui-slider-horizontal .ui-slider-range {
+	top: 0;
+	height: 100%;
+}
+.ui-slider-horizontal .ui-slider-range-min {
+	left: 0;
+}
+.ui-slider-horizontal .ui-slider-range-max {
+	right: 0;
+}
+
+.ui-widget {
+	font-family: Verdana,Arial,sans-serif;
+	font-size: 1.1em;
+}
+.ui-widget .ui-widget {
+	font-size: 1em;
+}
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button {
+	font-family: Verdana,Arial,sans-serif;
+	font-size: 1em;
+}
+.ui-widget-content {
+	border: 1px solid #aaaaaa;
+	background: #ffffff url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x;
+	color: #222222;
+}
+.ui-widget-content a {
+	color: #222222;
+}
+.ui-widget-header {
+	border: 1px solid #aaaaaa;
+	background-color: #cccccc;
+	color: #222222;
+	font-weight: bold;
+}
+.ui-widget-header a {
+	color: #222222;
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+	border: 1px solid #d3d3d3;
+	background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+	font-weight: normal;
+	color: #555555;
+}
+.ui-state-default a,
+.ui-state-default a:link,
+.ui-state-default a:visited {
+	color: #555555;
+	text-decoration: none;
+}
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus {
+	border: 1px solid #999999;
+	background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;
+	font-weight: normal;
+	color: #212121;
+}
+.ui-state-hover a,
+.ui-state-hover a:hover,
+.ui-state-hover a:link,
+.ui-state-hover a:visited {
+	color: #212121;
+	text-decoration: none;
+}
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active {
+	border: 1px solid #aaaaaa;
+	background: #ffffff url(images/ui-bg_glass_65_ffffff_1x400.png) 50% 50% repeat-x;
+	font-weight: normal;
+	color: #212121;
+}
+.ui-state-active a,
+.ui-state-active a:link,
+.ui-state-active a:visited {
+	color: #212121;
+	text-decoration: none;
+}
+
+.ui-state-highlight,
+.ui-widget-content .ui-state-highlight,
+.ui-widget-header .ui-state-highlight {
+	border: 1px solid #fcefa1;
+	background: #fbf9ee url(images/ui-bg_glass_55_fbf9ee_1x400.png) 50% 50% repeat-x;
+	color: #363636;
+}
+.ui-state-highlight a,
+.ui-widget-content .ui-state-highlight a,
+.ui-widget-header .ui-state-highlight a {
+	color: #363636;
+}
+.ui-state-error,
+.ui-widget-content .ui-state-error,
+.ui-widget-header .ui-state-error {
+	border: 1px solid #cd0a0a;
+	background: #fef1ec url(images/ui-bg_glass_95_fef1ec_1x400.png) 50% 50% repeat-x;
+	color: #cd0a0a;
+}
+.ui-state-error a,
+.ui-widget-content .ui-state-error a,
+.ui-widget-header .ui-state-error a {
+	color: #cd0a0a;
+}
+.ui-state-error-text,
+.ui-widget-content .ui-state-error-text,
+.ui-widget-header .ui-state-error-text {
+	color: #cd0a0a;
+}
+.ui-priority-primary,
+.ui-widget-content .ui-priority-primary,
+.ui-widget-header .ui-priority-primary {
+	font-weight: bold;
+}
+.ui-priority-secondary,
+.ui-widget-content .ui-priority-secondary,
+.ui-widget-header .ui-priority-secondary {
+	opacity: .7;
+	filter:Alpha(Opacity=70);
+	font-weight: normal;
+}
+.ui-state-disabled,
+.ui-widget-content .ui-state-disabled,
+.ui-widget-header .ui-state-disabled {
+	opacity: .35;
+	filter:Alpha(Opacity=35);
+	background-image: none;
+}
+.ui-state-disabled .ui-icon {
+	filter:Alpha(Opacity=35); /* For IE8 - See #6059 */
+}
+
+.ui-widget-content .ui-icon {
+	background-image: url(images/ui-icons_222222_256x240.png);
+}
+
+.ui-widget-header .ui-icon {
+	background-image: url(images/ui-icons_222222_256x240.png);
+}
+
+.ui-state-default .ui-icon {
+	background-image: url(images/ui-icons_888888_256x240.png);
+}
+
+/* Corner radius */
+.ui-corner-all,
+.ui-corner-top,
+.ui-corner-left,
+.ui-corner-tl {
+	border-top-left-radius: 4px;
+}
+.ui-corner-all,
+.ui-corner-top,
+.ui-corner-right,
+.ui-corner-tr {
+	border-top-right-radius: 4px;
+}
+.ui-corner-all,
+.ui-corner-bottom,
+.ui-corner-left,
+.ui-corner-bl {
+	border-bottom-left-radius: 4px;
+}
+.ui-corner-all,
+.ui-corner-bottom,
+.ui-corner-right,
+.ui-corner-br {
+	border-bottom-right-radius: 4px;
+}
+
+</style>
+]]></Data>
+</XData>
 </Class>
 </Export>
