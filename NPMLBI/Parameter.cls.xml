@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="NPMLBI.Parameter">
+<Super>%Persistent</Super>
+<TimeCreated>63013,84911.653232</TimeCreated>
+
+<Property name="Name">
+<Type>%String</Type>
+</Property>
+
+<Property name="AdditionalInfo">
+<Type>%String</Type>
+</Property>
+
+<Method name="Populate">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	do ..%KillExtent()
+	
+	set param = ..%New()
+	set param.Name = "Параметр 1"
+	set param.AdditionalInfo = "прм1.уе."
+	do param.%Save()
+	
+	set param = ..%New()
+	set param.Name = "Параметр 2"
+	set param.AdditionalInfo = "прм2.уе."
+	do param.%Save()
+	
+	set param = ..%New()
+	set param.Name = "Параметр 3"
+	set param.AdditionalInfo = "прм3.уе."
+	do param.%Save()
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^NPMLBI.ParameterD</DataLocation>
+<DefaultData>ParameterDefaultData</DefaultData>
+<IdLocation>^NPMLBI.ParameterD</IdLocation>
+<IndexLocation>^NPMLBI.ParameterI</IndexLocation>
+<StreamLocation>^NPMLBI.ParameterS</StreamLocation>
+<ExtentSize>100000</ExtentSize>
+<Data name="ParameterDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Name</Value>
+</Value>
+<Value name="3">
+<Value>AdditionalInfo</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>

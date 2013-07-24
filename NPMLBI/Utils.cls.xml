@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="NPMLBI.Utils">
+<TimeCreated>63015,30565.93413</TimeCreated>
+
+<Method name="PopulateAll">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	do ##class(NPMLBI.Parameter).Populate()
+	do ##class(NPMLBI.UkraineMap).Populate()
+	do ##class(NPMLBI.Borders).Populate()
+	do ##class(NPMLBI.TestData).Populate()
+]]></Implementation>
+</Method>
+</Class>
+</Export>

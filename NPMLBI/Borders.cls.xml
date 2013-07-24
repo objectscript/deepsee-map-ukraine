@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="NPMLBI.Borders">
+<Super>%Persistent</Super>
+<TimeCreated>63013,85407.309445</TimeCreated>
+
+<Property name="Parameter">
+<Type>NPMLBI.Parameter</Type>
+</Property>
+
+<Property name="Minimum">
+<Type>%Float</Type>
+</Property>
+
+<Property name="Maximum">
+<Type>%Float</Type>
+</Property>
+
+<Property name="ParentName">
+<Type>%String</Type>
+</Property>
+
+<Property name="Level">
+<Type>%Integer</Type>
+</Property>
+
+<Method name="GetBorders">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>paramName:%String,level:%Integer,parentName:%String</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	set borderMax = "100"
+	set borderMin = "25"
+	set paramUnitName = "-"
+	
+	&sql(SELECT Maximum, Minimum, Parameter->AdditionalInfo INTO:borderMax, :borderMin, :paramUnitName
+		 FROM NPMLBI.Borders
+		 WHERE Parameter->Name = :paramName AND ParentName = :parentName AND "Level" = :level)
+	
+	quit borderMin_";"_borderMax
+]]></Implementation>
+</Method>
+
+<Method name="SetBorders">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>paramName:%String,level:%Integer,parentName:%String,min:%Integer,max:%Integer</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set id = ""
+	
+	&sql(SELECT ID INTO:id 
+		 FROM NPMLBI.Borders
+		 WHERE Parameter->Name = :paramName AND ParentName = :parentName AND "Level" = :level)
+	
+	
+	if (id = "") quit 0
+	
+	set brd = ##class(NPMLBI.Borders).%OpenId(id,,.sc)
+	set brd.Maximum = max
+	set brd.Minimum = min
+	set st = brd.%Save()
+	
+	quit st
+]]></Implementation>
+</Method>
+
+<Method name="Populate">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	do ..%KillExtent()
+	
+	set variants = ##class(%ListOfDataTypes).%New()
+	do variants.Insert("0;-")
+	do variants.Insert("1;-")
+	do variants.Insert("1;Центр")
+	do variants.Insert("1;Восток-Центр")
+	do variants.Insert("1;Запад")
+	do variants.Insert("1;Юг")
+	do variants.Insert("1;Восток")
+	
+	&sql(DECLARE ParamCursor CURSOR FOR 
+		 SELECT ID 
+		 FROM NPMLBI.Parameter)	
+		 
+	&sql(OPEN ParamCursor)
+	for  
+	{
+		&sql(FETCH ParamCursor INTO :id) 
+		quit:(SQLCODE '= 0)
+		
+		for i=1:1:variants.Count()
+		{
+			set borders = ..%New()
+			set borders.Parameter = ##class(NPMLBI.Parameter).%OpenId(id)
+			
+		 	set borders.Level = $piece(variants.GetAt(i),";",1)
+		 	set borders.ParentName =  $piece(variants.GetAt(i),";",2)
+			set borders.Minimum = 0.25
+			set borders.Maximum = 0.75
+			do borders.%Save()
+		}
+	}
+	&sql(CLOSE ParamCursor)
+]]></Implementation>
+</Method>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^NPMLBI.BordersD</DataLocation>
+<DefaultData>BordersDefaultData</DefaultData>
+<IdLocation>^NPMLBI.BordersD</IdLocation>
+<IndexLocation>^NPMLBI.BordersI</IndexLocation>
+<StreamLocation>^NPMLBI.BordersS</StreamLocation>
+<ExtentSize>100000</ExtentSize>
+<Data name="BordersDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>Parameter</Value>
+</Value>
+<Value name="3">
+<Value>Min</Value>
+</Value>
+<Value name="4">
+<Value>Max</Value>
+</Value>
+<Value name="5">
+<Value>ParentName</Value>
+</Value>
+<Value name="6">
+<Value>Level</Value>
+</Value>
+<Value name="7">
+<Value>Minimum</Value>
+</Value>
+<Value name="8">
+<Value>Maximum</Value>
+</Value>
+<Value name="9">
+<Value>PlannedValue</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>
